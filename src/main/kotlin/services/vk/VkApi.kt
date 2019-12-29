@@ -9,16 +9,16 @@ import kotlin.random.Random
 
 object VkApi {
     private val accessKey = getProperty("vk-access-key")
-    private val apiVersion = getProperty("vl-api-version")
     private val groupId = getProperty("vk-group-id").toInt()
 
     private val logger = LoggerFactory.getLogger(VkClient::class.java)
 
+    // TODO not work on server, need enable billing
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
 
     fun sendMsg(peerId: Int, msg: String) {
-        val res = vkApi.messages()
+        vkApi.messages()
             .send(actor)
             .peerId(peerId)
             .randomId(Random.nextInt())

@@ -27,20 +27,26 @@ object VkClient : CallbackApi() {
     }
 
     override fun messageNew(groupId: Int?, message: Message?) {
-        println("new message")
-
-        message?.fromId?.let { VkApi.sendMsg(it, "Улыбочка)))") }
+        message?.fromId?.let {
+            VkApi.sendMsg(it, "Улыбочка)))")
+        }
     }
 
     override fun messageEdit(groupId: Int?, message: Message?) {
         println("message edit")
+        println(message.toString())
+
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
         println("group join")
+        println(message.toString())
+
     }
 
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {
         println("group leave")
+        println(message.toString())
+
     }
 }
