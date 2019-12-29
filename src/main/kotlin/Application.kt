@@ -1,5 +1,6 @@
 package com.group
 
+import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -9,9 +10,14 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
+import io.ktor.request.receiveText
 import io.ktor.response.respondText
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.routing
+
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
@@ -32,8 +38,16 @@ fun Application.module() {
 
     routing {
         get("/") {
-            call.respondText("HELLO WORLD123!", contentType = ContentType.Text.Plain)
+            call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
         }
+
+        post("/vk") {
+            val body = call.receiveText()
+
+            VkClient.handleRequest(body)
+
+            call.respondText("18359792", status = HttpStatusCode.OK)
+        }
+
     }
 }
-
