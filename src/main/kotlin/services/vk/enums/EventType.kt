@@ -9,7 +9,7 @@ enum class EventType(val value: String) {
     MESSAGE_DENY("message_deny"),
 
     GROUP_JOIN("group_join"),
-    GROUP_LEAVE("group_leave")
+    GROUP_LEAVE("group_leave");
 
     // Not all events, only require, need other add for the future
 }

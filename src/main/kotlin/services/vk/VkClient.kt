@@ -30,11 +30,10 @@ object VkClient {
         val event = Gson().fromJson(body, Event::class.java)
         logger.debug(event.toString())
 
-        when(event.getEventType()){
-            EventType.CONFIRMATION -> return Pair("18359792", HttpStatusCode.OK)
+        return when(event.getEventType()){
+            EventType.CONFIRMATION -> Pair("18359792", HttpStatusCode.OK)
+            else -> Pair("ok", HttpStatusCode.OK)
         }
-
-        return Pair("ok", HttpStatusCode.OK)
     }
 }
 
@@ -42,5 +41,5 @@ data class Event(val type: String = "",
                  val obj: String = "",
                  @SerializedName("group_id") val groupId: Int = 0,
                  @SerializedName("event_id") val eventId: String = "") {
-    fun getEventType() = EventType.valueOf(type)
+    fun getEventType() = EventType.valueOf(type.toUpperCase())
 }
