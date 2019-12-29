@@ -5,5 +5,7 @@ import org.slf4j.LoggerFactory
 
 object VkApi {
     private val accessKey = getProperty("vk-access-key")
+    private val apiVersion = getProperty("vl-api-version")
+
     private val logger = LoggerFactory.getLogger(VkClient::class.java)
 }
