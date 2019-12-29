@@ -1,6 +1,8 @@
 package com.group.services.vk.enums
 
 enum class EventType(val value: String) {
+    CONFIRMATION("confirmation"),
+
     MESSAGE_NEW("message_new"),
     MESSAGE_EDIT("message_edit"),
     MESSAGE_ALLOW("message_allow"),
