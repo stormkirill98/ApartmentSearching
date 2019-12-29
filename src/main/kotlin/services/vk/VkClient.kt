@@ -1,8 +1,8 @@
 package com.group.services.vk
 
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import com.group.services.getProperty
+import com.group.services.vk.entities.Event
 import com.group.services.vk.enums.EventType
 import io.ktor.http.HttpStatusCode
 import org.slf4j.LoggerFactory
@@ -30,13 +30,4 @@ object VkClient {
     private fun handleGroupJoin(event: Event) {
 
     }
-}
-
-data class Event(
-    val type: String = "",
-    val obj: String = "",
-    @SerializedName("group_id") val groupId: Int = 0,
-    @SerializedName("event_id") val eventId: String = ""
-) {
-    fun getEventType() = EventType.valueOf(type.toUpperCase())
 }
