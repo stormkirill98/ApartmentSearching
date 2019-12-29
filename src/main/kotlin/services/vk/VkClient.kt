@@ -1,33 +1,46 @@
 package com.group.services.vk
 
-import com.google.gson.Gson
 import com.group.services.getProperty
-import com.group.services.vk.entities.Event
-import com.group.services.vk.enums.EventType
+import com.vk.api.sdk.callback.CallbackApi
+import com.vk.api.sdk.objects.callback.GroupJoin
+import com.vk.api.sdk.objects.callback.GroupLeave
+import com.vk.api.sdk.objects.messages.Message
 import io.ktor.http.HttpStatusCode
 import org.slf4j.LoggerFactory
 
-object VkClient {
-    private val confirmedKey = getProperty("vk-confirmed-key")
+
+object VkClient : CallbackApi() {
+    private val CONFIRMED_KEY = getProperty("vk-confirmed-key")
 
     private val logger = LoggerFactory.getLogger(VkClient::class.java)
 
-
     fun handleRequest(body: String): Pair<String, HttpStatusCode> {
-        logger.debug(body)
+        logger.info(body)
 
-        val event = Gson().fromJson(body, Event::class.java)
-        logger.debug(event.toString())
+        if (body.contains(""""type": "confirmation""""))
+            return Pair(CONFIRMED_KEY, HttpStatusCode.OK)
 
-        when (event.getEventType()) {
-            EventType.CONFIRMATION -> return Pair(confirmedKey, HttpStatusCode.OK)
-            EventType.GROUP_JOIN -> handleGroupJoin(event)
-        }
-
-        return Pair("ok", HttpStatusCode.OK)
+        return if (parse(body))
+            Pair("ok", HttpStatusCode.OK)
+        else
+            Pair("error", HttpStatusCode.BadRequest)
     }
 
-    private fun handleGroupJoin(event: Event) {
+    override fun messageNew(groupId: Int?, message: Message?) {
+        println("new message")
 
+        message?.fromId?.let { VkApi.sendMsg(it, "Улыбочка)))") }
+    }
+
+    override fun messageEdit(groupId: Int?, message: Message?) {
+        println("message edit")
+    }
+
+    override fun groupJoin(groupId: Int?, message: GroupJoin?) {
+        println("group join")
+    }
+
+    override fun groupLeave(groupId: Int?, message: GroupLeave?) {
+        println("group leave")
     }
 }

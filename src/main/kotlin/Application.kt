@@ -1,6 +1,7 @@
 package com.group
 
 import com.group.services.vk.VkClient
+import com.vk.api.sdk.client.VkApiClient
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -10,7 +11,6 @@ import io.ktor.features.DefaultHeaders
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -41,8 +41,7 @@ fun Application.module() {
         }
 
         post("/vk") {
-            val(text, status) = VkClient.handleRequest(call.receiveText())
-
+            val (text, status) = VkClient.handleRequest(call.receiveText())
             call.respondText(text, status = status)
         }
     }
