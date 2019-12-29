@@ -11,7 +11,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.request.receive
 import io.ktor.request.receiveText
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -42,12 +41,9 @@ fun Application.module() {
         }
 
         post("/vk") {
-            val body = call.receiveText()
+            val(text, status) = VkClient.handleRequest(call.receiveText())
 
-            VkClient.handleRequest(body)
-
-            call.respondText("18359792", status = HttpStatusCode.OK)
+            call.respondText(text, status = status)
         }
-
     }
 }
