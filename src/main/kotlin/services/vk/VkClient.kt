@@ -2,26 +2,15 @@ package com.group.services.vk
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.group.services.getProperty
 import com.group.services.vk.enums.EventType
 import io.ktor.http.HttpStatusCode
 import org.slf4j.LoggerFactory
-import java.util.*
 
 object VkClient {
-    private val accessKey: String
-    private val confirmedKey: String
+    private val confirmedKey = getProperty("vk-confirmed-key")
 
     private val logger = LoggerFactory.getLogger(VkClient::class.java)
-
-    init {
-        val propFile = VkClient::class.java.getResource("/config.properties")
-        val props = Properties()
-
-        props.load(propFile.openStream())
-
-        accessKey = props.getProperty("vk-access-key")
-        confirmedKey = props.getProperty("vk-confirmed-key")
-    }
 
 
     fun handleRequest(body: String): Pair<String, HttpStatusCode> {
@@ -30,16 +19,24 @@ object VkClient {
         val event = Gson().fromJson(body, Event::class.java)
         logger.debug(event.toString())
 
-        return when(event.getEventType()){
-            EventType.CONFIRMATION -> Pair("18359792", HttpStatusCode.OK)
-            else -> Pair("ok", HttpStatusCode.OK)
+        when (event.getEventType()) {
+            EventType.CONFIRMATION -> return Pair(confirmedKey, HttpStatusCode.OK)
+            EventType.GROUP_JOIN -> handleGroupJoin(event)
         }
+
+        return Pair("ok", HttpStatusCode.OK)
+    }
+
+    private fun handleGroupJoin(event: Event) {
+
     }
 }
 
-data class Event(val type: String = "",
-                 val obj: String = "",
-                 @SerializedName("group_id") val groupId: Int = 0,
-                 @SerializedName("event_id") val eventId: String = "") {
+data class Event(
+    val type: String = "",
+    val obj: String = "",
+    @SerializedName("group_id") val groupId: Int = 0,
+    @SerializedName("event_id") val eventId: String = ""
+) {
     fun getEventType() = EventType.valueOf(type.toUpperCase())
 }
