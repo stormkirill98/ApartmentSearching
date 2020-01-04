@@ -14,7 +14,6 @@ object VkApi {
 
     private val logger = LoggerFactory.getLogger(VkClient::class.java)
 
-    // TODO not work on server, need enable billing
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
 
