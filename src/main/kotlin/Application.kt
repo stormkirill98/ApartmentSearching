@@ -42,7 +42,7 @@ fun Application.module() {
 
         post("/vk") {
             val (text, status) = VkClient.handleRequest(call.receiveText())
-            call.respondText(text, status = status)
+            call.respondText(text, status = status, contentType = ContentType.Text.Plain)
         }
     }
 }
