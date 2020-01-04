@@ -18,6 +18,8 @@ object VkApi {
     private val actor = GroupActor(groupId, accessKey)
 
     fun sendMsg(peerId: Int, msg: String) {
+        logger.info("Send msg to $peerId with text='$msg'")
+
         createMsgSender()
             .peerId(peerId)
             .message(msg)
