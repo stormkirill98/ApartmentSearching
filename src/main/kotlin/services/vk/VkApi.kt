@@ -12,7 +12,7 @@ object VkApi {
     private val accessKey = getProperty("vk-access-key")
     private val groupId = getProperty("vk-group-id").toInt()
 
-    private val logger = LoggerFactory.getLogger(VkClient::class.java)
+    private val logger = LoggerFactory.getLogger(VkApi::class.java)
 
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
