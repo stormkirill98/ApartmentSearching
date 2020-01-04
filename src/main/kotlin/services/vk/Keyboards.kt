@@ -2,25 +2,22 @@ package com.group.services.vk
 
 import com.vk.api.sdk.objects.messages.*
 
-val keyboard: Keyboard = Keyboard()
-    .setInline(false)
-    .setOneTime(true)
-
 enum class Keyboards(val keyboard: Keyboard) {
     Main(
-        keyboard
+        Keyboard()
+            .setOneTime(true)
             .setButtons(
                 listOf(
                     listOf(
                         KeyboardButton().apply {
-                            color = KeyboardButtonColor.DEFAULT
+                            color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"change\"}"
                                 label = "Изменить"
                             }
-
                         },
+
                         KeyboardButton().apply {
                             color = KeyboardButtonColor.NEGATIVE
                             action = KeyboardButtonAction().apply {
@@ -28,7 +25,6 @@ enum class Keyboards(val keyboard: Keyboard) {
                                 payload = "{\"command\":\"stop\"}"
                                 label = "Остановить"
                             }
-
                         }
                     )
                 )
@@ -36,7 +32,9 @@ enum class Keyboards(val keyboard: Keyboard) {
     ),
 
     Start(
-        keyboard
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
             .setButtons(
                 listOf(
                     listOf(
