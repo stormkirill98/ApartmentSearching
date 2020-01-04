@@ -32,7 +32,7 @@ fun Application.module() {
         method(HttpMethod.Patch)
         header(HttpHeaders.Authorization)
         allowCredentials = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        host("api.vk.com")
     }
 
     routing {
