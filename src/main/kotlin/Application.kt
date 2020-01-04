@@ -1,5 +1,10 @@
 package com.group
 
+import com.googlecode.objectify.ObjectifyFactory
+import com.googlecode.objectify.ObjectifyService
+import com.group.dao.UserDao
+import com.group.entities.User
+import com.group.entities.UserOrigin
 import com.group.services.vk.VkClient
 import com.vk.api.sdk.client.VkApiClient
 import io.ktor.application.Application
@@ -16,6 +21,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
+import kotlin.random.Random
 
 
 @Suppress("unused") // Referenced in application.conf
@@ -38,6 +44,14 @@ fun Application.module() {
     routing {
         get("/") {
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
+        }
+
+        get("/test") {
+            val users = UserDao.listAll()
+            call.respondText(users.toString(), contentType = ContentType.Text.Plain)
+
+            val newUser = User(Random.nextInt().toString(), UserOrigin.VK)
+            UserDao.save(newUser)
         }
 
         post("/vk") {
