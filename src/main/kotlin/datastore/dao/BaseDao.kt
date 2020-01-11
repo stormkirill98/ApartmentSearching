@@ -84,6 +84,10 @@ protected constructor(private val clazz: Class<T>) {
         return get(id) != null
     }
 
+    fun exists(id: String): Boolean {
+        return get(id) != null
+    }
+
     fun delete(obj: T) {
         ofy().delete().entity(obj)
     }
