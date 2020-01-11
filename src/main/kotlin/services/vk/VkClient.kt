@@ -36,12 +36,6 @@ object VkClient : CallbackApi() {
         }
     }
 
-    override fun messageEdit(groupId: Int?, message: Message?) {
-        println("message edit")
-        println(message.toString())
-
-    }
-
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
         message?.let {
             if (UserDao.exists(it.userId)) {
