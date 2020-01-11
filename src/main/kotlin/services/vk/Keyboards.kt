@@ -80,5 +80,26 @@ enum class Keyboards(val keyboard: Keyboard) {
                     )
                 )
             )
-    )
+    ),
+
+    Skip(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
+            .setButtons(
+                listOf(
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"skip\"}"
+                                label = "Пропустить"
+                            }
+
+                        }
+                    )
+                )
+            )
+    ),
 }
