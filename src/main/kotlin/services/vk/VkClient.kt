@@ -58,8 +58,9 @@ object VkClient : CallbackApi() {
     }
 
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {
-        println("group leave")
-        println(message.toString())
-
+        message?.let {
+            logger.info("Group Leave User='${it.userId}'")
+            VkApi.sendMsg(it.userId, "Вы уходите? Надемся вы нашли, что искали)")
+        }
     }
 }
