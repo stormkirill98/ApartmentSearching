@@ -8,7 +8,6 @@ import javax.servlet.ServletContextListener
 @Suppress("unused")
 class Bootstrapper : ServletContextListener {
     override fun contextInitialized(sce: ServletContextEvent?) {
-        println("         contextInitialized")
         ObjectifyService.init()
         ObjectifyService.register(User::class.java)
     }

@@ -70,11 +70,11 @@ enum class Keyboards(val keyboard: Keyboard) {
                         },
                         KeyboardButton().apply
                         {
-                            color = KeyboardButtonColor.POSITIVE
+                            color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"change\"}"
-                                label = "PRIMARY"
+                                label = "Изменить"
                             }
                         }
                     )

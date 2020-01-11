@@ -5,6 +5,7 @@ import com.googlecode.objectify.ObjectifyService.ofy
 import com.googlecode.objectify.Ref
 import com.googlecode.objectify.cmd.LoadType
 import com.googlecode.objectify.cmd.Query
+import com.group.datastore.entities.User
 import org.slf4j.LoggerFactory
 
 abstract class BaseDao<T>
@@ -39,27 +40,28 @@ protected constructor(private val clazz: Class<T>) {
         return ofy().save().entity(entity).now()
     }
 
-    operator fun get(id: Long): T {
+    fun get(id: Long): T {
         return ofy().load().type(clazz).id(id).now()
     }
 
-    operator fun get(stringId: String): T {
-        return get(java.lang.Long.valueOf(stringId))
+    fun get(id: String): T {
+        val key = Key.create(clazz, id)
+        return ofy().load().key<T>(key).now()
     }
 
-    operator fun get(key: Key<T>): T {
+    fun get(key: Key<T>): T {
         return ofy().load().key(key).now()
     }
 
-    operator fun get(parent: Ref<T>, id: Long): T {
+    fun get(parent: Ref<T>, id: Long): T {
         return ofy().load().type(clazz).parent(parent).id(id).now()
     }
 
-    operator fun get(parent: Ref<T>, id: String): T {
+    fun get(parent: Ref<T>, id: String): T {
         return get(parent, java.lang.Long.valueOf(id))
     }
 
-    operator fun get(parent: T, id: Long): T {
+    fun get(parent: T, id: Long): T {
         return ofy().load().type(clazz).parent(parent).id(id).now()
     }
 
