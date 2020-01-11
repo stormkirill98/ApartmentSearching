@@ -32,6 +32,7 @@ object VkClient : CallbackApi() {
     override fun messageNew(groupId: Int?, message: Message?) {
         message?.fromId?.let {
             VkApi.sendMsg(it, "Улыбочка)))")
+
         }
     }
 
