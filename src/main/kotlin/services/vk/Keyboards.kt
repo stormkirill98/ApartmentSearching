@@ -50,5 +50,35 @@ enum class Keyboards(val keyboard: Keyboard) {
                     )
                 )
             )
+    ),
+
+    Continue(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
+            .setButtons(
+                listOf(
+                    listOf(
+                        KeyboardButton().apply
+                        {
+                            color = KeyboardButtonColor.POSITIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"continue\"}"
+                                label = "Продолжить"
+                            }
+                        },
+                        KeyboardButton().apply
+                        {
+                            color = KeyboardButtonColor.POSITIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"change\"}"
+                                label = "PRIMARY"
+                            }
+                        }
+                    )
+                )
+            )
     )
 }

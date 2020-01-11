@@ -18,11 +18,7 @@ object VkApi {
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
 
-    fun sendMsg(peerId: Int, msg: String) {
-        sendMsg(peerId, msg, null)
-    }
-
-    private fun sendMsg(peerId: Int, msg: String, keyboard: Keyboard? = null) {
+    fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
 
         val sender = vkApi.messages()
@@ -31,7 +27,7 @@ object VkApi {
             .peerId(peerId)
             .message(msg)
 
-        keyboard?.let { sender.keyboard(keyboard) }
+        keyboard?.let { sender.keyboard(keyboard.keyboard) }
 
         sender.execute()
     }

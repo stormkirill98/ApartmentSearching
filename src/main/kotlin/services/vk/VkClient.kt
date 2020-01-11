@@ -42,7 +42,19 @@ object VkClient : CallbackApi() {
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
-        println(message.toString())
+        message?.let {
+            if (UserDao.exists(it.userId)) {
+                logger.info("Group Join User=${it.userId}. User is back")
+                VkApi.sendMsg(it.userId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.Continue)
+            } else {
+                logger.info("Group Join User=${it.userId}. New user")
+
+                val user = User.newVkUser(it.userId)
+                UserDao.saveNow(user)
+
+                VkApi.sendMsg(it.userId,"Привет! Начнем-с?", Keyboards.Start)
+            }
+        }
     }
 
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {

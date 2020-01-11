@@ -6,6 +6,10 @@ import com.googlecode.objectify.annotation.Id
 @Entity
 data class User(@Id val id: String?, var origin: UserOrigin){
     constructor() : this(null, UserOrigin.NONE)
+
+    companion object {
+        fun newVkUser(id: Int) = User(id.toString(), UserOrigin.VK)
+    }
 }
 
 enum class UserOrigin {
