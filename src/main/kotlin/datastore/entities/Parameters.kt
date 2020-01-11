@@ -1,4 +1,4 @@
-package com.group.entities
+package com.group.datastore.entities
 
 import com.googlecode.objectify.annotation.Id
 

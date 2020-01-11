@@ -1,12 +1,9 @@
 package com.group
 
-import com.googlecode.objectify.ObjectifyFactory
-import com.googlecode.objectify.ObjectifyService
-import com.group.dao.UserDao
-import com.group.entities.User
-import com.group.entities.UserOrigin
+import com.group.datastore.dao.UserDao
+import com.group.datastore.entities.User
+import com.group.datastore.entities.UserOrigin
 import com.group.services.vk.VkClient
-import com.vk.api.sdk.client.VkApiClient
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -47,11 +44,11 @@ fun Application.module() {
         }
 
         get("/test") {
-            val users = UserDao.listAll()
-            call.respondText(users.toString(), contentType = ContentType.Text.Plain)
-
             val newUser = User(Random.nextInt().toString(), UserOrigin.VK)
             UserDao.save(newUser)
+
+            val users = UserDao.listAll()
+            call.respondText(users.toString(), contentType = ContentType.Text.Plain)
         }
 
         post("/vk") {

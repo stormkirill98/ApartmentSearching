@@ -1,4 +1,4 @@
-package com.group.dao
+package com.group.datastore.dao
 
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy

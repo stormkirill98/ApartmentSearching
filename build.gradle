@@ -46,7 +46,4 @@ configurations.all {
     exclude module: 'slf4j'
 }
 
-
-kotlin.experimental.coroutines = 'enable'
-
 task run(dependsOn: appengineRun)
