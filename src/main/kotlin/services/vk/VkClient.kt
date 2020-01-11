@@ -1,5 +1,8 @@
 package com.group.services.vk
 
+import com.group.datastore.dao.UserDao
+import com.group.datastore.entities.User
+import com.group.datastore.entities.UserOrigin
 import com.group.services.getProperty
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -39,9 +42,7 @@ object VkClient : CallbackApi() {
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
-        println("group join")
         println(message.toString())
-
     }
 
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {
