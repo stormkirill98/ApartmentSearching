@@ -39,6 +39,7 @@ object VkClient : CallbackApi() {
 
             if (user == null) {
                 // TODO: add button for join to group
+                // TODO: check that user is not group member, if member then create he
                 VkApi.sendMsg(message.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
                 return
             }
