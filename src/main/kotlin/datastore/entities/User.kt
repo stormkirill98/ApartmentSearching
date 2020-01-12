@@ -12,6 +12,10 @@ class User private constructor(
 ) {
     constructor() : this("", UserOrigin.NONE, LogicState.NOT_START)
 
+    override fun toString(): String {
+        return "User(id=$id origin=$origin currentState=$currentState)"
+    }
+
     companion object {
         fun newVkUser(id: Int) = User(id.toString(), UserOrigin.VK, LogicState.NOT_START)
     }

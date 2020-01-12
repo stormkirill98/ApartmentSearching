@@ -43,6 +43,11 @@ fun Application.module() {
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
         }
 
+        get("/test") {
+            val users = UserDao.listAll()
+            call.respondText(users.toString(), contentType = ContentType.Text.Plain)
+        }
+
         post("/vk") {
             val (text, status) = VkClient.handleRequest(call.receiveText())
             call.respondText(text, status = status, contentType = ContentType.Text.Plain)
