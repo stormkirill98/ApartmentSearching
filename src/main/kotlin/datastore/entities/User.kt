@@ -8,18 +8,23 @@ import com.group.services.vk.enums.LogicState
 class User private constructor(
     @Id val id: String,
     var origin: UserOrigin,
-    var currentState: LogicState
+    var currentState: LogicState = LogicState.NOT_START,
+    var parameters: Parameters = Parameters()
 ) {
-    constructor() : this("", UserOrigin.NONE, LogicState.NOT_START)
+
+    @Suppress("unused") // need for objectify
+    constructor() : this("", UserOrigin.NONE)
 
     override fun toString(): String {
         return "User(id=$id origin=$origin currentState=$currentState)"
     }
 
     companion object {
-        fun newVkUser(id: Int) = User(id.toString(), UserOrigin.VK, LogicState.NOT_START)
+        fun newVkUser(id: Int) = User(id.toString(), UserOrigin.VK)
     }
 }
+
+data class Parameters(val flatParametersId: Long? = null)
 
 enum class UserOrigin {
     NONE,
