@@ -5,6 +5,7 @@ import com.group.datastore.entities.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Commands
 import com.group.services.vk.enums.Keyboards
+import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
@@ -35,18 +36,28 @@ object VkClient : CallbackApi() {
             val user = UserDao.get(message.fromId)
 
             if (user == null) {
+                // TODO: add button for join to group
                 VkApi.sendMsg(message.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
                 return
             }
 
+            if (it.payload == null) {
+                // TODO: handle city, price
+            }
+
             when (parseCommand(it.payload)) {
                 Commands.START -> {
+                    user.currentState = LogicState.START
+                    VkApi.cityMsg(it.fromId)
                 }
+
                 else -> {
                     logger.warn("Message='${it.text}' is not parsed")
                     VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
                 }
             }
+
+            UserDao.save(user)
         }
     }
 
@@ -54,14 +65,14 @@ object VkClient : CallbackApi() {
         message?.let {
             if (UserDao.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")
-                VkApi.sendMsg(it.userId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.Continue)
+                VkApi.continueMsg(it.userId)
             } else {
                 logger.info("Group Join User=${it.userId}. New user")
 
                 val user = User.newVkUser(it.userId)
                 UserDao.saveNow(user)
 
-                VkApi.sendMsg(it.userId, "Привет! Начнем-с?", Keyboards.START)
+                VkApi.startMsg(it.userId)
             }
         }
     }

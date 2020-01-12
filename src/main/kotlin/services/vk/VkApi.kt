@@ -5,7 +5,6 @@ import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
-import com.vk.api.sdk.objects.users.Fields
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
 
@@ -24,7 +23,27 @@ object VkApi {
             .userIds(id.toString())
             .execute()
 
-        return  result[0].firstName
+        return result[0].firstName
+    }
+
+    fun startMsg(peerId: Int) {
+        sendMsg(
+            peerId,
+            "Привет! " +
+                    "Я помогу тебе снять квартиру. " +
+                    "Для этого я буду присылать тебе новые объявления каждый час. " +
+                    "Начнем-с?",
+            Keyboards.START
+        )
+    }
+
+    fun continueMsg(peerId: Int) {
+        sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.Continue)
+    }
+
+    fun cityMsg(peerId: Int) {
+        // TODO: define city using location or user City
+        sendMsg(peerId, "Введите название города, в котором хотели бы снять квартиру")
     }
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
