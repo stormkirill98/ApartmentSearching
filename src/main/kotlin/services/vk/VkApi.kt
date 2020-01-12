@@ -1,7 +1,9 @@
 package com.group.services.vk
 
+import com.group.datastore.entities.Districts
 import com.group.services.getProperty
 import com.group.services.vk.enums.Keyboards
+import com.group.services.vk.enums.createDistrictsKeyboard
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
@@ -44,6 +46,10 @@ object VkApi {
     fun cityMsg(peerId: Int) {
         // TODO: define city using location or user City
         sendMsg(peerId, "Введите название города, в котором хотели бы снять квартиру")
+    }
+
+    fun districtsMsg(peerId: Int, districts: Districts) {
+        sendMsg(peerId, "Выберите нужные районы", createDistrictsKeyboard(districts))
     }
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {

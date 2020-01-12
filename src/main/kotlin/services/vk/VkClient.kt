@@ -1,10 +1,12 @@
 package com.group.services.vk
 
+import com.group.datastore.dao.FlatParametersDao
 import com.group.datastore.dao.UserDao
+import com.group.datastore.entities.Districts
+import com.group.datastore.entities.FlatParameters
 import com.group.datastore.entities.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Commands
-import com.group.services.vk.enums.Keyboards
 import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -41,13 +43,23 @@ object VkClient : CallbackApi() {
                 return
             }
 
+            val flatParameters = FlatParametersDao.get(user.parameters.flatParametersId)
+
             if (it.payload == null) {
-                // TODO: handle city, price
+                if (user.currentState == LogicState.CITY) {
+                    // TODO: check that right city name
+                    flatParameters.city = transliterateCyrillicToLatin(message.text)
+                    user.currentState = LogicState.DISTRICT
+
+                    // TODO: get districts by city
+                    VkApi.districtsMsg(it.fromId, Districts())
+                }
             }
 
             when (parseCommand(it.payload)) {
                 Commands.START -> {
                     user.currentState = LogicState.START
+
                     VkApi.cityMsg(it.fromId)
                 }
 
@@ -58,6 +70,7 @@ object VkClient : CallbackApi() {
             }
 
             UserDao.save(user)
+            FlatParametersDao.save(flatParameters)
         }
     }
 

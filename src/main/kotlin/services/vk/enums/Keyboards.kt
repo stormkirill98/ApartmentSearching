@@ -1,5 +1,6 @@
 package com.group.services.vk.enums
 
+import com.group.datastore.entities.Districts
 import com.vk.api.sdk.objects.messages.*
 
 enum class Keyboards(val keyboard: Keyboard) {
@@ -101,4 +102,30 @@ enum class Keyboards(val keyboard: Keyboard) {
                 )
             )
     ),
+
+    DISTRICTS(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
+            .setButtons(
+                listOf(
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"all_districts\"}"
+                                label = "Все"
+                            }
+
+                        }
+                    )
+                )
+            )
+    )
+}
+
+fun createDistrictsKeyboard(districts: Districts): Keyboards {
+    // TODO: create keyboard by districts
+    return Keyboards.DISTRICTS
 }

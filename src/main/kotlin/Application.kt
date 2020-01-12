@@ -3,9 +3,7 @@ package com.group
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.FlatParameters
 import com.group.datastore.entities.Price
-import com.group.services.transliterateCyrillicToLatin
 import com.group.services.vk.VkClient
-import com.ibm.icu.text.Transliterator
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install

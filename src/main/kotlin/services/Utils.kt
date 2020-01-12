@@ -12,8 +12,3 @@ fun getProperty(propName: String): String {
 
     return props.getProperty(propName)
 }
-
-fun transliterateCyrillicToLatin(str: String): String {
-    val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
-    return toLatinTrans.transliterate(str).replace("ʹ", "")
-}

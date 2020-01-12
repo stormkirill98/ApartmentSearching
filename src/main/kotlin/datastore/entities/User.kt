@@ -2,6 +2,7 @@ package com.group.datastore.entities
 
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
+import com.group.datastore.dao.FlatParametersDao
 import com.group.services.vk.enums.LogicState
 
 @Entity
@@ -24,7 +25,9 @@ class User private constructor(
     }
 }
 
-data class Parameters(val flatParametersId: Long? = null)
+class Parameters {
+    val flatParametersId: Long = FlatParametersDao.saveAndReturn(FlatParameters()).id ?: 0L
+}
 
 enum class UserOrigin {
     NONE,
