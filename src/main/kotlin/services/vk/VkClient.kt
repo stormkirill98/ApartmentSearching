@@ -3,7 +3,6 @@ package com.group.services.vk
 import com.group.datastore.dao.FlatParametersDao
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.Districts
-import com.group.datastore.entities.FlatParameters
 import com.group.datastore.entities.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Commands
@@ -47,28 +46,32 @@ object VkClient : CallbackApi() {
             val flatParameters = FlatParametersDao.get(user.parameters.flatParametersId)
 
             if (it.payload == null) {
-                if (user.currentState == LogicState.CITY) {
-                    // TODO: check that right city name
-                    flatParameters.city = transliterateCyrillicToLatin(message.text)
-                    user.currentState = LogicState.DISTRICT
+                when (user.currentState) {
+                    LogicState.CITY -> {
+                        // TODO: check that right city name
+                        flatParameters.city = transliterateCyrillicToLatin(message.text)
+                        user.currentState = LogicState.DISTRICT
 
-                    // TODO: get districts by city
-                    VkApi.districtsMsg(it.fromId, Districts())
+                        // TODO: get districts by city
+                        VkApi.districtsMsg(it.fromId, Districts())
+                    }
+                    else -> {
+                        logger.warn("Message='$it' is not parsed")
+                        VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
+                    }
                 }
+            } else {
+                when (parseCommand(it.payload)) {
+                    Commands.START -> {
+                        user.currentState = LogicState.START
 
-                return
-            }
+                        VkApi.cityMsg(it.fromId)
+                    }
 
-            when (parseCommand(it.payload)) {
-                Commands.START -> {
-                    user.currentState = LogicState.START
-
-                    VkApi.cityMsg(it.fromId)
-                }
-
-                else -> {
-                    logger.warn("Message='${it.text}' is not parsed")
-                    VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
+                    else -> {
+                        logger.warn("Message='$it' is not parsed")
+                        VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
+                    }
                 }
             }
 
