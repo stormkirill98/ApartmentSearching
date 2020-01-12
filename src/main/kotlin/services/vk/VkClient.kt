@@ -3,6 +3,7 @@ package com.group.services.vk
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.User
 import com.group.services.getProperty
+import com.group.services.vk.enums.Commands
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -31,9 +32,16 @@ object VkClient : CallbackApi() {
 
     override fun messageNew(groupId: Int?, message: Message?) {
         message?.let {
+            val user = UserDao.get(message.fromId)
 
-            when(parseCommand(it.payload)) {
+            if (user == null) {
+                VkApi.sendMsg(message.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
+                return
+            }
 
+            when (parseCommand(it.payload)) {
+                Commands.START -> {
+                }
                 else -> {
                     logger.warn("Message='${it.text}' is not parsed")
                     VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
@@ -53,7 +61,7 @@ object VkClient : CallbackApi() {
                 val user = User.newVkUser(it.userId)
                 UserDao.saveNow(user)
 
-                VkApi.sendMsg(it.userId,"Привет! Начнем-с?", Keyboards.START)
+                VkApi.sendMsg(it.userId, "Привет! Начнем-с?", Keyboards.START)
             }
         }
     }

@@ -45,7 +45,6 @@ enum class Keyboards(val keyboard: Keyboard) {
                                 payload = "{\"command\":\"start\"}"
                                 label = "Начать"
                             }
-
                         }
                     )
                 )
