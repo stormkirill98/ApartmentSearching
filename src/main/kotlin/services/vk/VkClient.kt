@@ -55,6 +55,8 @@ object VkClient : CallbackApi() {
                     // TODO: get districts by city
                     VkApi.districtsMsg(it.fromId, Districts())
                 }
+
+                return
             }
 
             when (parseCommand(it.payload)) {
