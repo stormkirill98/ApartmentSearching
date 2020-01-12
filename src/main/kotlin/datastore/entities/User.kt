@@ -21,17 +21,18 @@ class User private constructor(
     }
 
     companion object {
-        fun newVkUser(id: Int) = User(id.toString(), UserOrigin.VK)
+        fun newVkUser(id: Int): User {
+            val user = User(id.toString(), UserOrigin.VK)
+
+            val flatParametersId = FlatParametersDao.saveAndReturn(FlatParameters()).id ?: 0L
+            user.parameters = Parameters(flatParametersId)
+
+            return user
+        }
     }
 }
 
-class Parameters {
-    val flatParametersId: Long = FlatParametersDao.saveAndReturn(FlatParameters()).id ?: 0L
-
-    override fun toString(): String {
-        return "Parameters(flatParametersId=$flatParametersId)"
-    }
-}
+data class Parameters(val flatParametersId: Long = 0L)
 
 enum class UserOrigin {
     NONE,

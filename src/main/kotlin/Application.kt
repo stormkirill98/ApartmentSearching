@@ -45,7 +45,7 @@ fun Application.module() {
         }
 
         get("/test") {
-            val user = UserDao.get(139035212)
+            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
             call.respondText(user.toString(), contentType = ContentType.Text.Plain)
 
             /*val users = UserDao.listAll()
