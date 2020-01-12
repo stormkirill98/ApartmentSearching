@@ -31,11 +31,12 @@ object VkClient : CallbackApi() {
 
     override fun messageNew(groupId: Int?, message: Message?) {
         message?.let {
+
             when(parseCommand(it.payload)) {
 
                 else -> {
                     logger.warn("Message='${it.text}' is not parsed")
-                    VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду")
+                    VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
                 }
             }
         }

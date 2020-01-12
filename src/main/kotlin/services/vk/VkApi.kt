@@ -5,6 +5,7 @@ import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
+import com.vk.api.sdk.objects.users.Fields
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
 
@@ -16,6 +17,15 @@ object VkApi {
 
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
+
+    fun getUserName(id: Int): String {
+        val result = vkApi.users()
+            .get(actor)
+            .userIds(id.toString())
+            .execute()
+
+        return  result[0].firstName
+    }
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
