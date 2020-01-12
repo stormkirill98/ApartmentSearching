@@ -1,8 +1,8 @@
 package com.group
 
 import com.group.datastore.dao.UserDao
-import com.group.datastore.entities.User
-import com.group.datastore.entities.UserOrigin
+import com.group.datastore.entities.FlatParameters
+import com.group.datastore.entities.Price
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -18,7 +18,6 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import kotlin.random.Random
 
 
 @Suppress("unused") // Referenced in application.conf
@@ -45,7 +44,14 @@ fun Application.module() {
 
         get("/test") {
             val users = UserDao.listAll()
-            call.respondText(users.toString(), contentType = ContentType.Text.Plain)
+            call.respondText(
+                FlatParameters().apply {
+                    rooms.apply { one = true; two = true; studio = true };
+                    price = Price(1000, 5000);
+                    districts.add("District 1"); districts.add("District 2")
+                }.toString(),
+                contentType = ContentType.Text.Plain
+            )
         }
 
         post("/vk") {

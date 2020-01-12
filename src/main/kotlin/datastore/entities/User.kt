@@ -16,7 +16,7 @@ class User private constructor(
     constructor() : this("", UserOrigin.NONE)
 
     override fun toString(): String {
-        return "User(id=$id origin=$origin currentState=$currentState)"
+        return "User(id=$id origin=$origin currentState=$currentState) $parameters"
     }
 
     companion object {
