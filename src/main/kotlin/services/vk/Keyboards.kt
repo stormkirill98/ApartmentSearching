@@ -3,7 +3,7 @@ package com.group.services.vk
 import com.vk.api.sdk.objects.messages.*
 
 enum class Keyboards(val keyboard: Keyboard) {
-    Main(
+    MAIN(
         Keyboard()
             .setOneTime(true)
             .setButtons(
@@ -31,7 +31,7 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     ),
 
-    Start(
+    START(
         Keyboard()
             .setInline(false)
             .setOneTime(true)
@@ -82,7 +82,7 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     ),
 
-    Skip(
+    SKIP(
         Keyboard()
             .setInline(false)
             .setOneTime(true)

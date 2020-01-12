@@ -2,7 +2,6 @@ package com.group.services.vk
 
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.User
-import com.group.datastore.entities.UserOrigin
 import com.group.services.getProperty
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -30,9 +29,14 @@ object VkClient : CallbackApi() {
     }
 
     override fun messageNew(groupId: Int?, message: Message?) {
-        message?.fromId?.let {
-            VkApi.sendMsg(it, "Улыбочка)))")
+        message?.let {
+            when(parseCommand(it.payload)) {
 
+                else -> {
+                    logger.warn("Message='${it.text}' is not parsed")
+                    VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду")
+                }
+            }
         }
     }
 
@@ -47,7 +51,7 @@ object VkClient : CallbackApi() {
                 val user = User.newVkUser(it.userId)
                 UserDao.saveNow(user)
 
-                VkApi.sendMsg(it.userId,"Привет! Начнем-с?", Keyboards.Start)
+                VkApi.sendMsg(it.userId,"Привет! Начнем-с?", Keyboards.START)
             }
         }
     }
