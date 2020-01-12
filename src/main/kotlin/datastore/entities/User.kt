@@ -17,7 +17,7 @@ class User private constructor(
     constructor() : this("", UserOrigin.NONE)
 
     override fun toString(): String {
-        return "User(id=$id origin=$origin currentState=$currentState) $parameters"
+        return "User(id=$id origin=$origin currentState=$currentState $parameters)"
     }
 
     companion object {
@@ -27,6 +27,10 @@ class User private constructor(
 
 class Parameters {
     val flatParametersId: Long = FlatParametersDao.saveAndReturn(FlatParameters()).id ?: 0L
+
+    override fun toString(): String {
+        return "Parameters(flatParametersId=$flatParametersId)"
+    }
 }
 
 enum class UserOrigin {

@@ -1,8 +1,10 @@
 package com.group
 
+import com.group.datastore.dao.FlatParametersDao
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.FlatParameters
 import com.group.datastore.entities.Price
+import com.group.datastore.entities.User
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -43,7 +45,10 @@ fun Application.module() {
         }
 
         get("/test") {
-            val users = UserDao.listAll()
+            val user = UserDao.get(139035212)
+            call.respondText(user.toString(), contentType = ContentType.Text.Plain)
+
+            /*val users = UserDao.listAll()
             call.respondText(
                 FlatParameters().apply {
                     rooms.apply { one = true; two = true; studio = true };
@@ -51,7 +56,7 @@ fun Application.module() {
                     districts.add("District 1"); districts.add("District 2")
                 }.toString(),
                 contentType = ContentType.Text.Plain
-            )
+            )*/
         }
 
         post("/vk") {
