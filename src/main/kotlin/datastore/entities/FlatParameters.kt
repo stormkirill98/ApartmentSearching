@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Id
 @Entity
 class FlatParameters(
     var city: String = "",
-    val districts: Districts = Districts(),
+    val districts: Districts = Districts(), // TODO may use coords and radius instead districts
     val rooms: Rooms = Rooms(),
     var price: Price = Price.any(),
     var owner: Boolean = false,
@@ -21,7 +21,7 @@ class FlatParameters(
     }
 }
 
-class Districts(): ArrayList<String>() {
+class Districts : ArrayList<String>() {
     fun isAll() = isEmpty()
 
     override fun toString(): String {

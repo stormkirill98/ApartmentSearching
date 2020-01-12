@@ -40,6 +40,8 @@ dependencies {
 
     providedCompile "com.google.appengine:appengine:$appengine_version"
     implementation "com.googlecode.objectify:objectify:$objectify_version"
+
+    compile "com.ibm.icu:icu4j:$icu4j_version"
 }
 
 configurations.all {
