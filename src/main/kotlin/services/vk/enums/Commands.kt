@@ -1,4 +1,4 @@
-package com.group.services.vk
+package com.group.services.vk.enums
 
 enum class Commands {
     START, STOP, CHANGE, SKIP

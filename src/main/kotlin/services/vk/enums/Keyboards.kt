@@ -1,4 +1,4 @@
-package com.group.services.vk
+package com.group.services.vk.enums
 
 import com.vk.api.sdk.objects.messages.*
 

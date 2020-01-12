@@ -3,6 +3,7 @@ package com.group.services.vk
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.User
 import com.group.services.getProperty
+import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave

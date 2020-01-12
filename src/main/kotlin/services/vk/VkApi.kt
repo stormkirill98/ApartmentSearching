@@ -1,11 +1,10 @@
 package com.group.services.vk
 
 import com.group.services.getProperty
+import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
-import com.vk.api.sdk.objects.messages.Keyboard
-import com.vk.api.sdk.queries.messages.MessagesSendQuery
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
 
