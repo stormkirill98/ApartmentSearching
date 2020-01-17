@@ -2,7 +2,6 @@ package com.group.services.vk
 
 import com.group.datastore.dao.FlatParametersDao
 import com.group.datastore.dao.UserDao
-import com.group.datastore.entities.Districts
 import com.group.datastore.entities.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Commands
@@ -45,12 +44,12 @@ object VkClient : CallbackApi() {
 
             if (it.payload == null) {
                 when (user.currentState) {
-                    LogicState.CITY -> {
+/*                    LogicState.CITY -> {
                         flatParameters.city = transliterateCyrillicToLatin(message.text)
                         user.currentState = LogicState.DISTRICT
 
-                        VkApi.districtsMsg(it.fromId, Districts())
-                    }
+                        VkApi.districtsMsg(it.fromId)
+                    }*/
                     else -> {
                         logger.warn("Message='$it' is not parsed")
                         VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
@@ -61,7 +60,7 @@ object VkClient : CallbackApi() {
                     Commands.START -> {
                         user.currentState = LogicState.START
 
-                        VkApi.cityMsg(it.fromId)
+                        VkApi.districtsMsg(it.fromId)
                     }
 
                     else -> {
