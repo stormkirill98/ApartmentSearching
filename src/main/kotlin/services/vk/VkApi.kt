@@ -44,7 +44,6 @@ object VkApi {
     }
 
     fun cityMsg(peerId: Int) {
-        // TODO: define city using location or user City
         sendMsg(peerId, "Введите название города, в котором хотели бы снять квартиру")
     }
 

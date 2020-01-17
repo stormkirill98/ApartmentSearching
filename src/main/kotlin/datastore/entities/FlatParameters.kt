@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Id
 @Entity
 class FlatParameters(
     var city: String = "",
-    val districts: Districts = Districts(), // TODO may use coords and radius instead districts
+    val districts: Districts = Districts(),
     val rooms: Rooms = Rooms(),
     var price: Price = Price.any(),
     var owner: Boolean = false,

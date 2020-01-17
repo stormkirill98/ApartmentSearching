@@ -124,8 +124,3 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     )
 }
-
-fun createDistrictsKeyboard(districts: Districts): Keyboards {
-    // TODO: create keyboard by districts
-    return Keyboards.DISTRICTS
-}

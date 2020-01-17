@@ -37,8 +37,6 @@ object VkClient : CallbackApi() {
             val user = UserDao.get(message.fromId)
 
             if (user == null) {
-                // TODO: add button for join to group
-                // TODO: check that user is not group member, if member then create he
                 VkApi.sendMsg(message.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
                 return
             }
@@ -48,11 +46,9 @@ object VkClient : CallbackApi() {
             if (it.payload == null) {
                 when (user.currentState) {
                     LogicState.CITY -> {
-                        // TODO: check that right city name
                         flatParameters.city = transliterateCyrillicToLatin(message.text)
                         user.currentState = LogicState.DISTRICT
 
-                        // TODO: get districts by city
                         VkApi.districtsMsg(it.fromId, Districts())
                     }
                     else -> {
