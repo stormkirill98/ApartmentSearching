@@ -103,7 +103,7 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     ),
 
-    DISTRICTS(
+    YAROSLAVL_DISTRICTS(
         Keyboard()
             .setInline(false)
             .setOneTime(true)
@@ -114,10 +114,52 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"all_districts\"}"
-                                label = "Все"
+                                payload = "{\"command\":\"district_172\"}"
+                                label = "Дзержинский"
                             }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"district_173\"}"
+                                label = "Заволжский"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"district_174\"}"
+                                label = "Кировский"
+                            }
+                        }
+                    ),
 
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"district_175\"}"
+                                label = "Красноперекопский"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"district_176\"}"
+                                label = "Ленинский"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"district_177\"}"
+                                label = "Фрунзенский"
+                            }
                         }
                     )
                 )
