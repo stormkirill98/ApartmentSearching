@@ -4,7 +4,7 @@ import com.group.datastore.dao.FlatParametersDao
 import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.User
 import com.group.services.getProperty
-import com.group.services.vk.enums.Commands
+import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -31,43 +31,38 @@ object VkClient : CallbackApi() {
             Pair("error", HttpStatusCode.BadRequest)
     }
 
-    override fun messageNew(groupId: Int?, message: Message?) {
-        message?.let {
-            val user = UserDao.get(message.fromId)
+    override fun messageNew(groupId: Int?, msg: Message?) {
+        msg?.let {
+            val user = UserDao.get(msg.fromId)
 
             if (user == null) {
-                VkApi.sendMsg(message.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
+                VkApi.sendMsg(msg.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
                 return
             }
 
-            val flatParameters = FlatParametersDao.get(user.parameters.flatParametersId)
+            val flatParameters = FlatParametersDao.get(user.flatParametersId)
 
-            if (it.payload == null) {
-                when (user.currentState) {
-/*                    LogicState.CITY -> {
-                        flatParameters.city = transliterateCyrillicToLatin(message.text)
-                        user.currentState = LogicState.DISTRICT
+            val payload = msg.payload
+            when (user.currentState) {
+                LogicState.NOT_START -> {
+                   if (payload == null) {
+                        VkApi.startMsg(msg.fromId)
+                    } else {
+                        val command = parseCommand(payload)
 
-                        VkApi.districtsMsg(it.fromId)
-                    }*/
-                    else -> {
-                        logger.warn("Message='$it' is not parsed")
-                        VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
+                        if (command == Command.START)
+                            VkApi.districtsMsg(msg.fromId)
+                        else VkApi.startMsg(msg.fromId)
                     }
                 }
-            } else {
-                when (parseCommand(it.payload)) {
-                    Commands.START -> {
-                        user.currentState = LogicState.START
-
-                        VkApi.districtsMsg(it.fromId)
-                    }
-
-                    else -> {
-                        logger.warn("Message='$it' is not parsed")
-                        VkApi.sendMsg(it.fromId, "Не понял, что вы имеете ввиду, ${VkApi.getUserName(message.fromId)}")
-                    }
-                }
+                LogicState.START -> TODO()
+                LogicState.CITY -> TODO()
+                LogicState.DISTRICT -> TODO()
+                LogicState.COUNT_ROOM -> TODO()
+                LogicState.PRICE -> TODO()
+                LogicState.LANDLORD -> TODO()
+                LogicState.LEASE -> TODO()
+                LogicState.SEARCH_IN_PROGRESS -> TODO()
             }
 
             UserDao.save(user)
@@ -95,6 +90,7 @@ object VkClient : CallbackApi() {
         message?.let {
             logger.info("Group Leave User='${it.userId}'")
             VkApi.sendMsg(it.userId, "Вы уходите? Надемся вы нашли, что искали)")
+            // TODO: set state NOT_START, stop searching
         }
     }
 }

@@ -9,15 +9,13 @@ class FlatParameters(
     val districts: Districts = Districts(),
     val rooms: Rooms = Rooms(),
     var price: Price = Price.any(),
-    var owner: Boolean = false,
-    var daily: Boolean = false
+    var onlyOwner: Boolean = false
 ) {
     @Id val id: Long? = null
 
     override fun toString(): String {
         return "FlatParameters(id='$id' city='$city' $districts $rooms $price " +
-                (if (owner) "owner" else "all_landlords") + " " +
-                (if (daily) "daily" else "long_time") + ")"
+                (if (onlyOwner) "only_owner" else "all_landlords")+ ")"
     }
 }
 
@@ -31,7 +29,8 @@ class Districts : ArrayList<String>() {
     }
 }
 
-data class Price(override var start: Int, override var endInclusive: Int) : ClosedRange<Int> {
+data class Price(override var start: Int = Int.MIN_VALUE,
+                 override var endInclusive: Int = Int.MAX_VALUE) : ClosedRange<Int> {
     fun isAny() = start == Int.MIN_VALUE && endInclusive == Int.MAX_VALUE
 
     override fun toString(): String {

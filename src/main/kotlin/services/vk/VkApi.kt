@@ -41,10 +41,6 @@ object VkApi {
         sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.Continue)
     }
 
-    fun cityMsg(peerId: Int) {
-        sendMsg(peerId, "Введите название города, в котором хотели бы снять квартиру")
-    }
-
     fun districtsMsg(peerId: Int) {
         sendMsg(peerId, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
     }

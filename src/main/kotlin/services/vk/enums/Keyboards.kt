@@ -14,7 +14,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"change\"}"
+                                payload = "{\"command\":\"${Command.CHANGE}\"}"
                                 label = "Изменить"
                             }
                         },
@@ -23,7 +23,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.NEGATIVE
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"stop\"}"
+                                payload = "{\"command\":\"${Command.STOP}\"}"
                                 label = "Остановить"
                             }
                         }
@@ -43,7 +43,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.POSITIVE
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"start\"}"
+                                payload = "{\"command\":\"${Command.START}\"}"
                                 label = "Начать"
                             }
                         }
@@ -64,8 +64,8 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.POSITIVE
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"continue\"}"
-                                label = "Продолжить"
+                                payload = "{\"command\":\"${Command.CONTINUE}\"}"
+                                label = "Продолжить поиск"
                             }
                         },
                         KeyboardButton().apply
@@ -73,8 +73,8 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"change\"}"
-                                label = "Изменить"
+                                payload = "{\"command\":\"${Command.CHANGE}\"}"
+                                label = "Изменить параметры"
                             }
                         }
                     )
@@ -82,7 +82,7 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     ),
 
-    SKIP(
+    NEXT(
         Keyboard()
             .setInline(false)
             .setOneTime(true)
@@ -93,7 +93,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                             color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"skip\"}"
+                                payload = "{\"command\":\"${Command.NEXT}\"}"
                                 label = "Пропустить"
                             }
 
