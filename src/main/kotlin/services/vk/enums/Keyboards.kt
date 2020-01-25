@@ -96,7 +96,6 @@ enum class Keyboards(val keyboard: Keyboard) {
                                 payload = "{\"command\":\"${Command.NEXT}\"}"
                                 label = "Пропустить"
                             }
-
                         }
                     )
                 )

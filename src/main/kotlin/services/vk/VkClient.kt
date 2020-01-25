@@ -50,14 +50,20 @@ object VkClient : CallbackApi() {
                     } else {
                         val command = parseCommand(payload)
 
-                        if (command == Command.START)
+                        if (command == Command.START) {
                             VkApi.districtsMsg(msg.fromId)
+                            user.currentState = LogicState.DISTRICT
+                        }
                         else VkApi.startMsg(msg.fromId)
                     }
                 }
-                LogicState.START -> TODO()
+
                 LogicState.CITY -> TODO()
-                LogicState.DISTRICT -> TODO()
+
+                LogicState.DISTRICT -> {
+
+                }
+
                 LogicState.COUNT_ROOM -> TODO()
                 LogicState.PRICE -> TODO()
                 LogicState.LANDLORD -> TODO()
