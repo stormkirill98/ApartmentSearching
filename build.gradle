@@ -37,14 +37,12 @@ dependencies {
     compile "com.vk.api:sdk:$vk_api_version"
 
     compile "com.google.cloud:google-cloud-logging-logback:$gce_logback_version"
+    testCompile "org.slf4j:slf4j-log4j12:$slf4j_version"
+    testCompile "org.slf4j:slf4j-api:$slf4j_api_version"
 
     providedCompile "com.google.appengine:appengine:$appengine_version"
 
     compile "com.ibm.icu:icu4j:$icu4j_version"
-}
-
-configurations.all {
-    exclude module: 'slf4j'
 }
 
 task run(dependsOn: appengineRun)
