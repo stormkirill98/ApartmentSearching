@@ -1,7 +1,5 @@
 package com.group.services.vk
 
-import com.group.datastore.dao.FlatParametersDao
-import com.group.datastore.dao.UserDao
 import com.group.datastore.entities.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Command
@@ -33,17 +31,17 @@ object VkClient : CallbackApi() {
 
     override fun messageNew(groupId: Int?, msg: Message?) {
         msg?.let {
-            val user = UserDao.get(msg.fromId)
+//            val user = UserDao.get(msg.fromId)
 
-            if (user == null) {
+            /*if (user == null) {
                 VkApi.sendMsg(msg.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
                 return
-            }
+            }*/
 
-            val flatParameters = FlatParametersDao.get(user.flatParametersId)
+//            val flatParameters = FlatParametersDao.get(user.flatParametersId)
 
             val payload = msg.payload
-            when (user.currentState) {
+            /*when (user.currentState) {
                 LogicState.NOT_START -> {
                    if (payload == null) {
                         VkApi.startMsg(msg.fromId)
@@ -69,16 +67,16 @@ object VkClient : CallbackApi() {
                 LogicState.LANDLORD -> TODO()
                 LogicState.LEASE -> TODO()
                 LogicState.SEARCH_IN_PROGRESS -> TODO()
-            }
+            }*/
 
-            UserDao.save(user)
-            FlatParametersDao.save(flatParameters)
+/*            UserDao.save(user)
+            FlatParametersDao.save(flatParameters)*/
         }
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
         message?.let {
-            if (UserDao.exists(it.userId)) {
+            /*if (UserDao.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")
                 VkApi.continueMsg(it.userId)
             } else {
@@ -88,7 +86,7 @@ object VkClient : CallbackApi() {
                 UserDao.saveNow(user)
 
                 VkApi.startMsg(it.userId)
-            }
+            }*/
         }
     }
 

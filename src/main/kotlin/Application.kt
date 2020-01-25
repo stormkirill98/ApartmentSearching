@@ -1,9 +1,5 @@
 package com.group
 
-import com.group.datastore.dao.FlatParametersDao
-import com.group.datastore.dao.UserDao
-import com.group.datastore.entities.FlatParameters
-import com.group.datastore.entities.Price
 import com.group.datastore.entities.User
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
@@ -45,8 +41,8 @@ fun Application.module() {
         }
 
         get("/test") {
-            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
-            call.respondText(user.toString(), contentType = ContentType.Text.Plain)
+//            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
+//            call.respondText(user.toString(), contentType = ContentType.Text.Plain)
 
             /*val users = UserDao.listAll()
             call.respondText(

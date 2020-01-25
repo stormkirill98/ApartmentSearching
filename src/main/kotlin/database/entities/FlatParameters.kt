@@ -1,9 +1,6 @@
 package com.group.datastore.entities
 
-import com.googlecode.objectify.annotation.Entity
-import com.googlecode.objectify.annotation.Id
 
-@Entity
 class FlatParameters(
     var city: String = "",
     val districts: Districts = Districts(),
@@ -11,7 +8,7 @@ class FlatParameters(
     var price: Price = Price.any(),
     var onlyOwner: Boolean = false
 ) {
-    @Id val id: Long? = null
+    val id: Long? = null
 
     override fun toString(): String {
         return "FlatParameters(id='$id' city='$city' $districts $rooms $price " +
