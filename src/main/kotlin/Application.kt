@@ -1,6 +1,5 @@
 package com.group
 
-import com.group.datastore.entities.User
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -41,7 +40,7 @@ fun Application.module() {
         }
 
         get("/test") {
-//            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
+            //            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
 //            call.respondText(user.toString(), contentType = ContentType.Text.Plain)
 
             /*val users = UserDao.listAll()
