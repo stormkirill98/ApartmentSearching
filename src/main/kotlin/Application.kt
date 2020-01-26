@@ -2,10 +2,13 @@ package com.group
 
 import com.group.database.FlatSearchParameters
 import com.group.database.SearchParameters
+import com.group.database.User
+import com.group.database.UserOrigin
 import com.group.datastore.entities.Districts
 import com.group.datastore.entities.Price
 import com.group.datastore.entities.Rooms
 import com.group.services.vk.VkClient
+import com.group.services.vk.enums.LogicState
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -55,8 +58,14 @@ fun Application.module() {
                     onlyOwner = true
                 }
 
-                SearchParameters.new {
+                val searchParameters = SearchParameters.new {
                     flatParameters = flatSearchParameters
+                }
+
+                User.new {
+                    origin = UserOrigin.NONE
+                    state = LogicState.NOT_START
+                    this.searchParameters = searchParameters
                 }
             }
 

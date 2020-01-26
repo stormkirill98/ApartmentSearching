@@ -1,9 +1,6 @@
 package com.group.services.vk
 
-import com.group.datastore.entities.User
 import com.group.services.getProperty
-import com.group.services.vk.enums.Command
-import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave

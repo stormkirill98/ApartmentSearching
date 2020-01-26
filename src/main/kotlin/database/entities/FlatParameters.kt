@@ -12,7 +12,7 @@ class FlatParameters(
 
     override fun toString(): String {
         return "FlatParameters(id='$id' city='$city' $districts $rooms $price " +
-                (if (onlyOwner) "only_owner" else "all_landlords")+ ")"
+                (if (onlyOwner) "only_owner" else "all_landlords") + ")"
     }
 }
 
@@ -22,12 +22,14 @@ class Districts : ArrayList<String>() {
     override fun toString(): String {
         return if (isAll())
             "Districts(Any)"
-        else "Districts${joinToString(prefix="(", postfix = ")")}"
+        else "Districts${joinToString(prefix = "(", postfix = ")")}"
     }
 }
 
-data class Price(override var start: Int = Int.MIN_VALUE,
-                 override var endInclusive: Int = Int.MAX_VALUE) : ClosedRange<Int> {
+data class Price(
+    override var start: Int = Int.MIN_VALUE,
+    override var endInclusive: Int = Int.MAX_VALUE
+) : ClosedRange<Int> {
     fun isAny() = start == Int.MIN_VALUE && endInclusive == Int.MAX_VALUE
 
     override fun toString(): String {
