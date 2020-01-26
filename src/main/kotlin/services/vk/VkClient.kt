@@ -65,7 +65,6 @@ object VkClient : CallbackApi() {
                 LogicState.COUNT_ROOM -> TODO()
                 LogicState.PRICE -> TODO()
                 LogicState.LANDLORD -> TODO()
-                LogicState.LEASE -> TODO()
                 LogicState.SEARCH_IN_PROGRESS -> TODO()
             }*/
 
