@@ -1,20 +1,4 @@
-package com.group.datastore.entities
-
-
-class FlatParameters(
-    var city: String = "",
-    val districts: Districts = Districts(),
-    val rooms: Rooms = Rooms(),
-    var price: Price = Price.any(),
-    var onlyOwner: Boolean = false
-) {
-    val id: Long? = null
-
-    override fun toString(): String {
-        return "FlatParameters(id='$id' city='$city' $districts $rooms $price " +
-                (if (onlyOwner) "only_owner" else "all_landlords") + ")"
-    }
-}
+package com.group.database.entities
 
 class Districts : ArrayList<String>() {
     fun isAll() = isEmpty()

@@ -10,10 +10,10 @@ import org.postgresql.util.PGobject
 object UserTable : IdTable<String>() {
     val origin = customEnumeration("origin", "UserOrigin",
         { value -> UserOrigin.valueOf(value as String) },
-        { PGEnum("UserOrigin", it) })
+        { PGEnum("\"UserOrigin\"", it) })
     val state = customEnumeration("state", "LogicState",
         { value -> LogicState.valueOf(value as String) },
-        { PGEnum("LogicState", it) })
+        { PGEnum("\"LogicState\"", it) })
 
     val parameters = reference("search_parameters_id", SearchParametersTable)
 

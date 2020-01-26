@@ -1,6 +1,5 @@
 package com.group.services.vk.enums
 
-import com.group.datastore.entities.Districts
 import com.vk.api.sdk.objects.messages.*
 
 enum class Keyboards(val keyboard: Keyboard) {
