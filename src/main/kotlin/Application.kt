@@ -1,7 +1,7 @@
 package com.group
 
-import com.group.database.dao.FlatSearchParameter
-import com.group.database.dao.FlatSearchParameters
+import com.group.database.FlatSearchParameter
+import com.group.database.FlatSearchParameters
 import com.group.datastore.entities.Districts
 import com.group.datastore.entities.Price
 import com.group.datastore.entities.Rooms
@@ -46,29 +46,6 @@ fun Application.module() {
 
     routing {
         get("/") {
-            Database.connect(
-                "jdbc:postgresql://35.242.227.75:5432/postgres",
-                driver = "org.postgresql.Driver",
-                user = "postgres",
-                password = "admin"
-            )
-
-            transaction {
-                addLogger(StdOutSqlLogger)
-
-                SchemaUtils.create(FlatSearchParameters)
-
-                val buf = FlatSearchParameter.new {
-                    city = "Yaroslavl"
-                    districts = Districts().toString()
-                    rooms = Rooms().toString()
-                    priceInterval = Price().toString()
-                    onlyOwner = true
-                }
-
-                println("Save parameter = $buf")
-            }
-
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
         }
 

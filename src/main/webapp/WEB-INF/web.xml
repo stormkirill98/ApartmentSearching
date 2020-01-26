@@ -16,4 +16,8 @@
         <servlet-name>KtorServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>com.group.Bootstrapper</listener-class>
+    </listener>
 </web-app>

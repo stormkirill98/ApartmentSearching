@@ -1,22 +1,9 @@
-package com.group.database.dao
+package com.group.database
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-
-/*
-object User: Table() {
-    val id = varchar("id", 255)
-    var origin = customEnumeration("origin", "origin", {value -> Foo.valueOf(value as String)}, { UserOrigin("FooEnum", it)})
-}
-
-class UserOrigin<T:Enum<T>>(enumTypeName: String, enumValue: T) : PGobject() {
-    init {
-        value = enumValue.name
-        type = enumTypeName
-    }
-}*/
 
 object FlatSearchParameters : IntIdTable() {
     val city = varchar("city", 100)
