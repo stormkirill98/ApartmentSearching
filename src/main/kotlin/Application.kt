@@ -1,7 +1,7 @@
 package com.group
 
-import com.group.database.FlatSearchParameter
 import com.group.database.FlatSearchParameters
+import com.group.database.SearchParameters
 import com.group.datastore.entities.Districts
 import com.group.datastore.entities.Price
 import com.group.datastore.entities.Rooms
@@ -20,8 +20,6 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -46,6 +44,22 @@ fun Application.module() {
 
     routing {
         get("/") {
+            transaction {
+                addLogger(StdOutSqlLogger)
+
+                val flatSearchParameters = FlatSearchParameters.new {
+                    city = "Yaroslavl"
+                    districts = Districts().toString()
+                    rooms = Rooms().toString()
+                    priceInterval = Price().toString()
+                    onlyOwner = true
+                }
+
+                SearchParameters.new {
+                    flatParameters = flatSearchParameters
+                }
+            }
+
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
         }
 

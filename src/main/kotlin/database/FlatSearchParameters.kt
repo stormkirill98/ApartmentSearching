@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
-object FlatSearchParameters : IntIdTable() {
+object FlatSearchParametersTable : IntIdTable() {
     val city = varchar("city", 100)
     val districts = text("districts")
     val rooms = text("rooms")
@@ -13,14 +13,14 @@ object FlatSearchParameters : IntIdTable() {
     val onlyOwner = bool("onlyOwner")
 }
 
-class FlatSearchParameter(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<FlatSearchParameter>(FlatSearchParameters)
+class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<FlatSearchParameters>(FlatSearchParametersTable)
 
-    var city by FlatSearchParameters.city
-    var districts by FlatSearchParameters.districts
-    var rooms by FlatSearchParameters.rooms
-    var priceInterval by FlatSearchParameters.priceInterval
-    var onlyOwner by FlatSearchParameters.onlyOwner
+    var city by FlatSearchParametersTable.city
+    var districts by FlatSearchParametersTable.districts
+    var rooms by FlatSearchParametersTable.rooms
+    var priceInterval by FlatSearchParametersTable.priceInterval
+    var onlyOwner by FlatSearchParametersTable.onlyOwner
 
     override fun toString(): String {
         return "FlatParameters(id='$id' city='$city' $districts $rooms $priceInterval " +
