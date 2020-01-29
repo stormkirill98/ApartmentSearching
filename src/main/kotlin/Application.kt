@@ -1,9 +1,6 @@
 package com.group
 
-import com.group.database.FlatSearchParameters
-import com.group.database.SearchParameters
-import com.group.database.User
-import com.group.database.UserOrigin
+import com.group.database.*
 import com.group.database.entities.Districts
 import com.group.database.entities.Price
 import com.group.database.entities.Rooms
@@ -23,6 +20,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -62,7 +60,7 @@ fun Application.module() {
                     flatParameters = flatSearchParameters
                 }
 
-                User.new {
+                User.new(12312) {
                     origin = UserOrigin.NONE
                     state = LogicState.NOT_START
                     this.searchParameters = searchParameters

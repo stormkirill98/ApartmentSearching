@@ -5,8 +5,10 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
+const val CITY_NAME_LENGTH = 100
+
 object FlatSearchParametersTable : IntIdTable() {
-    val city = varchar("city", 100)
+    val city = varchar("city", CITY_NAME_LENGTH)
     val districts = text("districts")
     val rooms = text("rooms")
     val priceInterval = text("priceInterval")
