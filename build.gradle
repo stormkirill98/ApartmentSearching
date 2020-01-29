@@ -38,6 +38,7 @@ dependencies {
     compile("org.jetbrains.exposed:exposed-dao:$exposed_version")
     compile("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     compile("org.postgresql:postgresql:$postgresql_version")
+    compile 'com.google.cloud.sql:postgres-socket-factory:1.0.15'
 
     compile "com.vk.api:sdk:$vk_api_version"
 

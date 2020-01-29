@@ -8,10 +8,11 @@ import javax.servlet.ServletContextListener
 class Bootstrapper : ServletContextListener {
     override fun contextInitialized(sce: ServletContextEvent?) {
         Database.connect(
-            "jdbc:postgresql://35.242.227.75:5432/postgres",
-            driver = "org.postgresql.Driver",
-            user = "postgres",
-            password = "admin"
+            "jdbc:postgresql:///postgres" +
+                    "?cloudSqlInstance=apartment-searching:europe-west3:myinstance" +
+                    "&socketFactory=com.google.cloud.sql.postgres.SocketFactory" +
+                    "&user=postgres&password=admin",
+            driver = "org.postgresql.Driver"
         )
     }
 
