@@ -16,15 +16,19 @@ object UserTable : IntIdTable() {
         { value -> LogicState.valueOf(value as String) },
         { PGEnum("\"LogicState\"", it) })
 
-    val parameters = reference("search_parameters_id", SearchParametersTable)
+    val searchParametersId = reference("search_parameters_id", SearchParametersTable)
 }
 
-class User(id: EntityID<Int>) : IntEntity(id) {
-    companion object : EntityClass<Int, User>(UserTable)
+class UserDao(id: EntityID<Int>) : IntEntity(id) {
+    companion object : EntityClass<Int, UserDao>(UserTable)
 
     var origin by UserTable.origin
     var state by UserTable.state
-    var searchParameters by SearchParameters referencedOn UserTable.parameters
+    var searchParametersId by SearchParameters referencedOn UserTable.searchParametersId
+
+    override fun toString(): String {
+        return "User( ${id.value} $origin $state"
+    }
 }
 
 enum class UserOrigin {

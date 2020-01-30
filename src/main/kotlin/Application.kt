@@ -1,9 +1,6 @@
 package com.group
 
 import com.group.database.*
-import com.group.database.entities.Districts
-import com.group.database.entities.Price
-import com.group.database.entities.Rooms
 import com.group.services.vk.VkClient
 import com.group.services.vk.enums.LogicState
 import io.ktor.application.Application
@@ -20,10 +17,10 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.random.Random
 
 
 @Suppress("unused") // Referenced in application.conf
@@ -45,10 +42,14 @@ fun Application.module() {
 
     routing {
         get("/") {
-            transaction {
+            call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
+        }
+
+        get("/test") {
+            val savedUser = transaction {
                 addLogger(StdOutSqlLogger)
 
-                val flatSearchParameters = FlatSearchParameters.new {
+                val flatSearchParameters = FlatSearchParametersDao.new(Random.nextInt(-10000000, 0)) {
                     city = "Yaroslavl"
                     districts = Districts().toString()
                     rooms = Rooms().toString()
@@ -56,33 +57,38 @@ fun Application.module() {
                     onlyOwner = true
                 }
 
-                val searchParameters = SearchParameters.new {
+                val searchParameters = SearchParameters.new(Random.nextInt(-10000000, 0)) {
                     flatParameters = flatSearchParameters
                 }
 
-                User.new(12312) {
+                UserDao.new(Random.nextInt(-10000000, 0)) {
                     origin = UserOrigin.NONE
                     state = LogicState.NOT_START
-                    this.searchParameters = searchParameters
+                    searchParametersId = searchParameters
                 }
             }
 
-            call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
+            call.respondText("For test was save user: $savedUser", contentType = ContentType.Text.Plain)
         }
 
-        get("/test") {
-            //            val user = UserDao.saveAndReturn(User.newVkUser(123123123))
-//            call.respondText(user.toString(), contentType = ContentType.Text.Plain)
+        get("/get_flat") {
+            val flatSearchParameters = FlatSearchParametersDao.getObject(86)
 
-            /*val users = UserDao.listAll()
-            call.respondText(
-                FlatParameters().apply {
-                    rooms.apply { one = true; two = true; studio = true };
-                    price = Price(1000, 5000);
-                    districts.add("District 1"); districts.add("District 2")
-                }.toString(),
-                contentType = ContentType.Text.Plain
-            )*/
+            call.respondText("Get flat parameters: $flatSearchParameters", contentType = ContentType.Text.Plain)
+        }
+
+        get("save_flat") {
+            val flatSearchParameters = FlatSearchParameters(
+                city = "Yaroslavl",
+                districts = Districts(),
+                rooms = Rooms(),
+                priceInterval = Price(),
+                onlyOwner = true
+            )
+
+            val savedFlatSearchParameters = FlatSearchParametersDao.saveObject(flatSearchParameters)
+
+            call.respondText("Save flat parameters: $savedFlatSearchParameters", contentType = ContentType.Text.Plain)
         }
 
         post("/vk") {

@@ -12,5 +12,5 @@ object SearchParametersTable : IntIdTable() {
 class SearchParameters(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<SearchParameters>(SearchParametersTable)
 
-    var flatParameters by FlatSearchParameters referencedOn SearchParametersTable.flatParameters
+    var flatParameters by FlatSearchParametersDao referencedOn SearchParametersTable.flatParameters
 }
