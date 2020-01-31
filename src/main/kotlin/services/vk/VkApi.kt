@@ -45,6 +45,10 @@ object VkApi {
         sendMsg(peerId, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
     }
 
+    fun roomsMsg(peerId: Int) {
+        sendMsg(peerId, "Выберите кол-во квартир, которое вам подходит")
+    }
+
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
 

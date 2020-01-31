@@ -59,7 +59,7 @@ fun Application.module() {
             val savedFlatSearchParameters = transaction {
                 FlatSearchParameters.new {
                     city = "Yaroslavl"
-                    districts = Districts()
+                    districts = ""
                     rooms = Rooms()
                     priceInterval = Price()
                     onlyOwner = true

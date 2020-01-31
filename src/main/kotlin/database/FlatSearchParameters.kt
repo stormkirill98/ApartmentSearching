@@ -22,20 +22,17 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
         fun newByDefault() = transaction {
             return@transaction new {
                 city = ""
-                districts = Districts()
+                districts = ""
                 rooms = Rooms()
                 priceInterval = Price()
                 onlyOwner = false
             }
         }
-    };
+    }
 
     // TODO: transform выполняется на каждое обращение к полю
     var city by FlatSearchParametersTable.city
-    var districts by FlatSearchParametersTable.districts.transform(
-        { Gson().toJson(it) },
-        { Gson().fromJson(it, Districts::class.java) }
-    )
+    var districts by FlatSearchParametersTable.districts
     var rooms by FlatSearchParametersTable.rooms.transform(
         { Gson().toJson(it) },
         { Gson().fromJson(it, Rooms::class.java) }
@@ -46,6 +43,12 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
     )
 
     var onlyOwner by FlatSearchParametersTable.onlyOwner
+
+    fun addDistrict(districtId: String) =
+        if (!districts.contains(districtId)) {
+            districts += "$districtId,"
+            true
+        } else false
 }
 
 class Districts : ArrayList<String>() {

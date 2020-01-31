@@ -93,7 +93,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"${Command.NEXT}\"}"
-                                label = "Пропустить"
+                                label = "Далее"
                             }
                         }
                     )
@@ -104,7 +104,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     YAROSLAVL_DISTRICTS(
         Keyboard()
             .setInline(false)
-            .setOneTime(true)
+            .setOneTime(false)
             .setButtons(
                 listOf(
                     listOf(
@@ -159,7 +159,20 @@ enum class Keyboards(val keyboard: Keyboard) {
                                 label = "Фрунзенский"
                             }
                         }
+                    ),
+
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.NEXT}\"}"
+                                label = "Далее"
+                            }
+                        }
                     )
+
+                    // TODO: add button for clear districts
                 )
             )
     )

@@ -44,7 +44,7 @@ fun parseCountRoomCommand(payload: String): CountRoomCommand {
     }
 }
 
-fun parseDistrict(payload: String) = payload.substringAfter("_")
+fun parseDistrict(payload: String) = payload.substringAfter("_").substringBefore("\"")
 
 fun transliterateCyrillicToLatin(str: String): String {
     val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")

@@ -1,5 +1,6 @@
 package com.group.services.vk
 
+import com.group.database.Districts
 import com.group.database.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Command
@@ -59,7 +60,19 @@ object VkClient : CallbackApi() {
                     LogicState.CITY -> TODO()
 
                     LogicState.DISTRICTS -> {
+                        if (payload.contains("district")) {
+                            val districtId = parseDistrict(payload)
+                            // TODO: send msg, that district was saved
+                            flatParameters.addDistrict(districtId)
+                        } else {
+                            val command = parseCommand(payload)
 
+                            if (command == Command.NEXT) {
+                                VkApi.roomsMsg(msg.fromId)
+                            } else {
+                                TODO("Handle wrong command(it is error)")
+                            }
+                        }
                     }
 
                     LogicState.COUNT_ROOM -> TODO()
