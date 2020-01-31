@@ -2,7 +2,6 @@ package com.group
 
 import com.group.database.*
 import com.group.services.vk.VkClient
-import com.group.services.vk.enums.LogicState
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -17,10 +16,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.random.Random
 
 
 @Suppress("unused") // Referenced in application.conf
@@ -45,49 +41,28 @@ fun Application.module() {
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
         }
 
-        get("/test") {
-            val savedUser = transaction {
-                addLogger(StdOutSqlLogger)
-
-                val flatSearchParameters = FlatSearchParametersDao.new(Random.nextInt(-10000000, 0)) {
-                    city = "Yaroslavl"
-                    districts = Districts().toString()
-                    rooms = Rooms().toString()
-                    priceInterval = Price().toString()
-                    onlyOwner = true
-                }
-
-                val searchParameters = SearchParameters.new(Random.nextInt(-10000000, 0)) {
-                    flatParameters = flatSearchParameters
-                }
-
-                UserDao.new(Random.nextInt(-10000000, 0)) {
-                    origin = UserOrigin.NONE
-                    state = LogicState.NOT_START
-                    searchParametersId = searchParameters
-                }
+        get("/get_flat") {
+            val id = call.request.queryParameters["id"]
+            if (id.isNullOrEmpty()) {
+                call.respondText("Wrong id parameter", contentType = ContentType.Text.Plain)
+                return@get
             }
 
-            call.respondText("For test was save user: $savedUser", contentType = ContentType.Text.Plain)
-        }
-
-        get("/get_flat") {
-            val flatSearchParameters = FlatSearchParametersDao.getObject(86)
+            val flatSearchParameters = transaction { FlatSearchParameters.get(id.toInt()) }
 
             call.respondText("Get flat parameters: $flatSearchParameters", contentType = ContentType.Text.Plain)
         }
 
         get("save_flat") {
-            val flatSearchParameters = FlatSearchParameters(
-                city = "Yaroslavl",
-                districts = Districts(),
-                rooms = Rooms(),
-                priceInterval = Price(),
-                onlyOwner = true
-            )
-
-            val savedFlatSearchParameters = FlatSearchParametersDao.saveObject(flatSearchParameters)
-
+            val savedFlatSearchParameters = transaction {
+                FlatSearchParameters.new {
+                    city = "Yaroslavl"
+                    districts = Districts()
+                    rooms = Rooms()
+                    priceInterval = Price()
+                    onlyOwner = true
+                }
+            }
             call.respondText("Save flat parameters: $savedFlatSearchParameters", contentType = ContentType.Text.Plain)
         }
 

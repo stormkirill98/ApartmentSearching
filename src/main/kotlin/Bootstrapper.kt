@@ -1,6 +1,5 @@
 package com.group
 
-import com.group.services.vk.VkApi
 import org.jetbrains.exposed.sql.Database
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
@@ -32,5 +31,5 @@ class Bootstrapper : ServletContextListener {
         }
     }
 
-    override fun contextDestroyed(sce: ServletContextEvent?) {}
+    override fun contextDestroyed(sce: ServletContextEvent) {}
 }

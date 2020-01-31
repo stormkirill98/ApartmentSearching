@@ -19,8 +19,8 @@ object UserTable : IntIdTable() {
     val searchParametersId = reference("search_parameters_id", SearchParametersTable)
 }
 
-class UserDao(id: EntityID<Int>) : IntEntity(id) {
-    companion object : EntityClass<Int, UserDao>(UserTable)
+class User(id: EntityID<Int>) : IntEntity(id) {
+    companion object : EntityClass<Int, User>(UserTable)
 
     var origin by UserTable.origin
     var state by UserTable.state

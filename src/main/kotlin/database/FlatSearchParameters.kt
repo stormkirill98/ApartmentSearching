@@ -17,55 +17,24 @@ object FlatSearchParametersTable : IntIdTable() {
     val onlyOwner = bool("onlyOwner")
 }
 
-class FlatSearchParametersDao(id: EntityID<Int>) : IntEntity(id) {
+class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<FlatSearchParameters>(FlatSearchParametersTable)
+
     var city by FlatSearchParametersTable.city
-    var districts by FlatSearchParametersTable.districts
-    var rooms by FlatSearchParametersTable.rooms
-    var priceInterval by FlatSearchParametersTable.priceInterval
+    var districts by FlatSearchParametersTable.districts.transform(
+        { Gson().toJson(it) },
+        { Gson().fromJson(it, Districts::class.java) }
+    )
+    var rooms by FlatSearchParametersTable.rooms.transform(
+        { Gson().toJson(it) },
+        { Gson().fromJson(it, Rooms::class.java) }
+    )
+    var priceInterval by FlatSearchParametersTable.priceInterval.transform(
+        { Gson().toJson(it) },
+        { Gson().fromJson(it, Price::class.java) }
+    )
+
     var onlyOwner by FlatSearchParametersTable.onlyOwner
-
-    companion object : IntEntityClass<FlatSearchParametersDao>(FlatSearchParametersTable) {
-        fun getObject(id: Int): FlatSearchParameters {
-            val dao = transaction { get(id) }
-            return FlatSearchParameters(
-                dao.id.value,
-                dao.city.trim(),
-                Gson().fromJson(dao.districts, Districts::class.java),
-                Gson().fromJson(dao.rooms, Rooms::class.java),
-                Gson().fromJson(dao.priceInterval, Price::class.java),
-                dao.onlyOwner
-            )
-        }
-
-        fun saveObject(obj: FlatSearchParameters): FlatSearchParameters {
-            return transaction {
-                val flatSearchParametersDao = new {
-                    city = obj.city
-                    districts = Gson().toJson(obj.districts)
-                    rooms = Gson().toJson(obj.rooms)
-                    priceInterval = Gson().toJson(obj.priceInterval)
-                    onlyOwner = obj.onlyOwner
-                }
-
-                obj.id = flatSearchParametersDao.id.value
-                return@transaction obj
-            }
-        }
-    }
-}
-
-data class FlatSearchParameters(
-    var id: Int = 0,
-    var city: String,
-    val districts: Districts,
-    val rooms: Rooms,
-    val priceInterval: Price,
-    var onlyOwner: Boolean
-) {
-    override fun toString(): String {
-        return "FlatParameters(id='$id' city='$city' $districts $rooms $priceInterval " +
-                (if (onlyOwner) "only_owner" else "all_landlords") + ")"
-    }
 }
 
 class Districts : ArrayList<String>() {
