@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 
 const val CITY_NAME_LENGTH = 100
 
@@ -18,7 +18,17 @@ object FlatSearchParametersTable : IntIdTable() {
 }
 
 class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<FlatSearchParameters>(FlatSearchParametersTable);
+    companion object : IntEntityClass<FlatSearchParameters>(FlatSearchParametersTable) {
+        fun newByDefault() = transaction {
+            return@transaction new {
+                city = ""
+                districts = Districts()
+                rooms = Rooms()
+                priceInterval = Price()
+                onlyOwner = false
+            }
+        }
+    };
 
     // TODO: transform выполняется на каждое обращение к полю
     var city by FlatSearchParametersTable.city

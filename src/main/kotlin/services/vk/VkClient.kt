@@ -39,7 +39,7 @@ object VkClient : CallbackApi() {
                 }
 
                 val user = User.get(msg.fromId)
-                val flatParameters = user.searchParametersId.flatParameters
+                val flatParameters = user.searchParameters.flatParameters
 
                 val payload = msg.payload
                 when (user.state) {
@@ -51,14 +51,14 @@ object VkClient : CallbackApi() {
 
                             if (command == Command.START) {
                                 VkApi.districtsMsg(msg.fromId)
-                                user.state = LogicState.DISTRICT
+                                user.state = LogicState.DISTRICTS
                             } else VkApi.startMsg(msg.fromId)
                         }
                     }
 
                     LogicState.CITY -> TODO()
 
-                    LogicState.DISTRICT -> {
+                    LogicState.DISTRICTS -> {
 
                     }
 
@@ -73,17 +73,16 @@ object VkClient : CallbackApi() {
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
         message?.let {
-            /*if (User.exists(it.userId)) {
+            if (User.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")
                 VkApi.continueMsg(it.userId)
             } else {
                 logger.info("Group Join User=${it.userId}. New user")
 
-                val user = User.newVkUser(it.userId)
-                UserDao.saveNow(user)
+                User.newVkUser(it.userId)
 
                 VkApi.startMsg(it.userId)
-            }*/
+            }
         }
     }
 
