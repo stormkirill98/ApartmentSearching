@@ -1,11 +1,15 @@
 package com.group.services.vk
 
+import com.group.database.User
 import com.group.services.getProperty
+import com.group.services.vk.enums.Command
+import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
 import com.vk.api.sdk.objects.messages.Message
 import io.ktor.http.HttpStatusCode
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 
 
@@ -28,51 +32,48 @@ object VkClient : CallbackApi() {
 
     override fun messageNew(groupId: Int?, msg: Message?) {
         msg?.let {
-//            val user = UserDao.get(msg.fromId)
+            transaction {
+                if (!User.exists(msg.fromId)) {
+                    VkApi.sendMsg(msg.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
+                    return@transaction
+                }
 
-            /*if (user == null) {
-                VkApi.sendMsg(msg.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
-                return
-            }*/
+                val user = User.get(msg.fromId)
+                val flatParameters = user.searchParametersId.flatParameters
 
-//            val flatParameters = FlatParametersDao.get(user.flatParametersId)
+                val payload = msg.payload
+                when (user.state) {
+                    LogicState.NOT_START -> {
+                        if (payload == null) {
+                            VkApi.startMsg(msg.fromId)
+                        } else {
+                            val command = parseCommand(payload)
 
-            val payload = msg.payload
-            /*when (user.currentState) {
-                LogicState.NOT_START -> {
-                   if (payload == null) {
-                        VkApi.startMsg(msg.fromId)
-                    } else {
-                        val command = parseCommand(payload)
-
-                        if (command == Command.START) {
-                            VkApi.districtsMsg(msg.fromId)
-                            user.currentState = LogicState.DISTRICT
+                            if (command == Command.START) {
+                                VkApi.districtsMsg(msg.fromId)
+                                user.state = LogicState.DISTRICT
+                            } else VkApi.startMsg(msg.fromId)
                         }
-                        else VkApi.startMsg(msg.fromId)
                     }
+
+                    LogicState.CITY -> TODO()
+
+                    LogicState.DISTRICT -> {
+
+                    }
+
+                    LogicState.COUNT_ROOM -> TODO()
+                    LogicState.PRICE -> TODO()
+                    LogicState.LANDLORD -> TODO()
+                    LogicState.SEARCH_IN_PROGRESS -> TODO()
                 }
-
-                LogicState.CITY -> TODO()
-
-                LogicState.DISTRICT -> {
-
-                }
-
-                LogicState.COUNT_ROOM -> TODO()
-                LogicState.PRICE -> TODO()
-                LogicState.LANDLORD -> TODO()
-                LogicState.SEARCH_IN_PROGRESS -> TODO()
-            }*/
-
-/*            UserDao.save(user)
-            FlatParametersDao.save(flatParameters)*/
+            }
         }
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
         message?.let {
-            /*if (UserDao.exists(it.userId)) {
+            /*if (User.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")
                 VkApi.continueMsg(it.userId)
             } else {

@@ -5,6 +5,8 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.exists
+import org.jetbrains.exposed.sql.select
 import org.postgresql.util.PGobject
 
 object UserTable : IntIdTable() {
@@ -20,7 +22,9 @@ object UserTable : IntIdTable() {
 }
 
 class User(id: EntityID<Int>) : IntEntity(id) {
-    companion object : EntityClass<Int, User>(UserTable)
+    companion object : EntityClass<Int, User>(UserTable) {
+        fun exists(id: Int) = UserTable.select { UserTable.id eq id }.count() > 0
+    }
 
     var origin by UserTable.origin
     var state by UserTable.state
