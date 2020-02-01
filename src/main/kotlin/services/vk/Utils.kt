@@ -3,7 +3,6 @@ package com.group.services.vk
 import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.CountRoomCommand
 import com.group.services.vk.enums.LandlordCommand
-import com.ibm.icu.text.Transliterator
 
 fun parseCommand(payload: String): Command {
     val action = payload
@@ -48,11 +47,6 @@ fun parseCountRoomCommand(payload: String): CountRoomCommand {
 }
 
 fun parseDistrict(payload: String) = payload.substringAfter("_").substringBefore("\"")
-
-fun transliterateCyrillicToLatin(str: String): String {
-    val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
-    return toLatinTrans.transliterate(str).replace("ʹ", "")
-}
 
 fun isPriceMsg(msg: String) = msg.matches(Regex("(от \\d+ до \\d+|от \\d+|до \\d+)"))
 

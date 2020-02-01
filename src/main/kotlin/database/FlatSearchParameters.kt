@@ -1,5 +1,6 @@
 package com.group.database
 
+import com.group.UrlGenerator
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -40,7 +41,7 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
 
     fun addDistrict(districtId: String) {
         if (!districts.contains(districtId)) {
-            districts += "$districtId,"
+            districts += "$districtId-"
         }
     }
 
@@ -82,6 +83,8 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
             else -> "от $startPrice до $endPrice"
         }
 
+        val avitoUrl = UrlGenerator.getAvitoUrl(this)
+
         return """
             Проверьте параметры поиска, которые вы задали:
             
@@ -94,6 +97,8 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
             4. Цена: $priceInterval
             
             5. ${ if (onlyOwner) "Только собственник" else "От собственника и от агенства" }
+            
+            Сгенерированная ссылка на авито: $avitoUrl
         """.trimIndent()
     }
 }
