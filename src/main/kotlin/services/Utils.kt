@@ -1,6 +1,7 @@
 package com.group.services
 
 import com.group.services.vk.VkClient
+import com.ibm.icu.text.Transliterator
 import java.util.*
 
 fun getProperty(propName: String): String {

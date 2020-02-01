@@ -10,5 +10,6 @@
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
+        <logger name="Exposed" level="debug"> <appender-ref ref="STDOUT" /> </logger>
     </Loggers>
 </Configuration>
