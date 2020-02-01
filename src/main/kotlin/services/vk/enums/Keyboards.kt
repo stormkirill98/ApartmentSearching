@@ -163,7 +163,23 @@ enum class Keyboards(val keyboard: Keyboard) {
 
                     listOf(
                         KeyboardButton().apply {
+                            color = KeyboardButtonColor.NEGATIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.CLEAR}\"}"
+                                label = "Сбросить"
+                            }
+                        },
+                        KeyboardButton().apply {
                             color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.ALL}\"}"
+                                label = "Любой"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.POSITIVE
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"${Command.NEXT}\"}"
@@ -171,8 +187,77 @@ enum class Keyboards(val keyboard: Keyboard) {
                             }
                         }
                     )
+                )
+            )
+    ),
 
-                    // TODO: add button for clear districts
+    COUNT_ROOMS(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(false)
+            .setButtons(
+                listOf(
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${CountRoomCommand.ROOM_1}\"}"
+                                label = "1"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${CountRoomCommand.ROOM_2}\"}"
+                                label = "2"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${CountRoomCommand.ROOM_3}\"}"
+                                label = "3"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${CountRoomCommand.ROOM_MORE_3}\"}"
+                                label = "3+"
+                            }
+                        }
+                    ),
+
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.NEGATIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.CLEAR}\"}"
+                                label = "Сбросить"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.ALL}\"}"
+                                label = "Любой"
+                            }
+                        },
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.POSITIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.NEXT}\"}"
+                                label = "Далее"
+                            }
+                        }
+                    )
                 )
             )
     )

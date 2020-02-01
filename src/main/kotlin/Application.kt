@@ -1,6 +1,8 @@
 package com.group
 
-import com.group.database.*
+import com.group.database.FlatSearchParameters
+import com.group.database.Price
+import com.group.database.Rooms
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -16,12 +18,11 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.jetty.Jetty
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
-@Suppress("unused") // Referenced in application.conf
 fun Application.module() {
     // This adds Date and Server headers to each response, and allows custom additional headers
     install(DefaultHeaders)

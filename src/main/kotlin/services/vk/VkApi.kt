@@ -46,7 +46,23 @@ object VkApi {
     }
 
     fun roomsMsg(peerId: Int) {
-        sendMsg(peerId, "Выберите кол-во квартир, которое вам подходит")
+        sendMsg(peerId, "Выберите кол-во квартир, которое вам подходит", Keyboards.COUNT_ROOMS)
+    }
+
+    fun successAddDistrictMsg(peerId: Int, district: String) {
+        sendMsg(peerId, "Район: $district был успешно добавлен в параметры поиска")
+    }
+
+    fun alreadyAddedDistrictMsg(peerId: Int, district: String) {
+        sendMsg(peerId, "Район: $district уже был добавлен")
+    }
+
+    fun clearDistrictsMsg(peerId: Int) {
+        sendMsg(peerId, "Выбранные районы были сброшены. В таком случае поиск будет выполняться по всем районам")
+    }
+
+    fun wrongCommandMsg(peerId: Int) {
+        sendMsg(peerId, "Неверная комманда")
     }
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {

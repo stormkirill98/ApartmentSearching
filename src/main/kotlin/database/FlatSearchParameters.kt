@@ -49,6 +49,14 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
             districts += "$districtId,"
             true
         } else false
+
+    fun clearDistricts() {
+        districts = ""
+    }
+
+    fun addDistricts(districts: ArrayList<Int>) {
+        this.districts = districts.joinToString()
+    }
 }
 
 class Districts : ArrayList<String>() {

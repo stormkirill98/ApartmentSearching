@@ -12,6 +12,9 @@ fun parseCommand(payload: String): Command {
         .substringBefore("\"")
 
     return try {
+        // TODO: enhancement: remove toUpperCase(),
+        //  all command in payload already in uppercase,
+        //  not forget to change commands in Postman on uppercase
         Command.valueOf(action.toUpperCase())
     } catch (e: IllegalArgumentException) {
         Command.NONE
