@@ -85,18 +85,19 @@ object VkApi {
     }
 
     fun waitMsg(peerId: Int) {
-        TODO("not implemented")
+        sendMsg(peerId, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
     }
 
     fun groupLeaveMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
+        sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
     }
 
     fun wrongPriceMsg(peerId: Int) {
         sendMsg(
             peerId,
             "Введенный диапазон цен не соответствует формату\n" +
-                  "Правильный формат: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)"
+                  "Правильный формат: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)",
+            Keyboards.PRICE
         )
     }
 
