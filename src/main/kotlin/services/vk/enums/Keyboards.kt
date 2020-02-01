@@ -6,7 +6,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     MAIN(
         Keyboard()
             .setInline(false)
-            .setOneTime(true)
+            .setOneTime(false)
             .setButtons(
                 listOf(
                     listOf(
@@ -35,7 +35,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     START(
         Keyboard()
             .setInline(false)
-            .setOneTime(true)
+            .setOneTime(false)
             .setButtons(
                 listOf(
                     listOf(
@@ -55,7 +55,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     WAIT(
         Keyboard()
             .setInline(false)
-            .setOneTime(true)
+            .setOneTime(false)
             .setButtons(
                 listOf(
                     listOf(
@@ -75,26 +75,6 @@ enum class Keyboards(val keyboard: Keyboard) {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"${Command.CONTINUE}\"}"
                                 label = "Продолжить"
-                            }
-                        }
-                    )
-                )
-            )
-    ),
-
-    NEXT(
-        Keyboard()
-            .setInline(false)
-            .setOneTime(true)
-            .setButtons(
-                listOf(
-                    listOf(
-                        KeyboardButton().apply {
-                            color = KeyboardButtonColor.PRIMARY
-                            action = KeyboardButtonAction().apply {
-                                type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"${Command.NEXT}\"}"
-                                label = "Далее"
                             }
                         }
                     )
@@ -266,7 +246,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     PRICE(
         Keyboard()
             .setInline(false)
-            .setOneTime(true)
+            .setOneTime(false)
             .setButtons(
                 listOf(
                     listOf(
@@ -286,7 +266,7 @@ enum class Keyboards(val keyboard: Keyboard) {
     LANDLORDS(
         Keyboard()
         .setInline(false)
-        .setOneTime(true)
+        .setOneTime(false)
         .setButtons(
             listOf(
                 listOf(
