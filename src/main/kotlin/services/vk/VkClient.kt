@@ -58,6 +58,11 @@ object VkClient : CallbackApi() {
                     LogicState.CITY -> TODO()
 
                     LogicState.DISTRICTS -> {
+                        if (payload == null) {
+                            VkApi.wrongCommandMsg(msg.fromId)
+                            return@transaction
+                        }
+
                         if (payload.contains("district")) {
                             val districtId = parseDistrict(payload)
                             flatParameters.addDistrict(districtId)
@@ -143,7 +148,6 @@ object VkClient : CallbackApi() {
 
                             flatParameters.setPriceInterval(parsePrice(text))
                             user.state = LogicState.LANDLORD
-                            user.state = LogicState.LANDLORD
                             VkApi.landlordMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
@@ -193,6 +197,7 @@ object VkClient : CallbackApi() {
                                 Command.START -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
+                                    // TODO: run search
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
