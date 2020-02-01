@@ -1,8 +1,5 @@
 package com.group
 
-import com.group.database.FlatSearchParameters
-import com.group.database.Price
-import com.group.database.Rooms
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -18,9 +15,6 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.jetty.Jetty
-import org.jetbrains.exposed.sql.transactions.transaction
 
 
 fun Application.module() {
@@ -42,31 +36,6 @@ fun Application.module() {
     routing {
         get("/") {
             call.respondText("It's server for apartments searching!", contentType = ContentType.Text.Plain)
-        }
-
-        get("/get_flat") {
-            val id = call.request.queryParameters["id"]
-            if (id.isNullOrEmpty()) {
-                call.respondText("Wrong id parameter", contentType = ContentType.Text.Plain)
-                return@get
-            }
-
-            val flatSearchParameters = transaction { FlatSearchParameters.get(id.toInt()) }
-
-            call.respondText("Get flat parameters: $flatSearchParameters", contentType = ContentType.Text.Plain)
-        }
-
-        get("save_flat") {
-            val savedFlatSearchParameters = transaction {
-                FlatSearchParameters.new {
-                    city = "Yaroslavl"
-                    districts = ""
-                    rooms = Rooms()
-                    priceInterval = Price()
-                    onlyOwner = true
-                }
-            }
-            call.respondText("Save flat parameters: $savedFlatSearchParameters", contentType = ContentType.Text.Plain)
         }
 
         post("/vk") {

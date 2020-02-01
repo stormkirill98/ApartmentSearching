@@ -260,5 +260,25 @@ enum class Keyboards(val keyboard: Keyboard) {
                     )
                 )
             )
+    ),
+
+    PRICE(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
+            .setButtons(
+                listOf(
+                    listOf(
+                        KeyboardButton().apply {
+                            color = KeyboardButtonColor.PRIMARY
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.ALL}\"}"
+                                label = "Любая"
+                            }
+                        }
+                    )
+                )
+            )
     )
 }

@@ -53,3 +53,17 @@ fun transliterateCyrillicToLatin(str: String): String {
     val toLatinTrans = Transliterator.getInstance("Russian-Latin/BGN")
     return toLatinTrans.transliterate(str).replace("ʹ", "")
 }
+
+fun isPriceMsg(msg: String) = msg.matches(Regex("(от \\d+ до \\d+|от \\d+|до \\d+)"))
+
+fun parsePrice(s: String): Pair<Int, Int> {
+    val startPrice = if (s.contains("от "))
+        s.substringAfter("от ").substringBefore(" до").toInt()
+    else 0
+
+    val endPrice = if (s.contains("до "))
+        s.substringAfter("до ").toInt()
+    else 0
+
+    return startPrice to endPrice
+}

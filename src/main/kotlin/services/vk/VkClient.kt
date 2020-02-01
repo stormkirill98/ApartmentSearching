@@ -1,6 +1,5 @@
 package com.group.services.vk
 
-import com.group.database.Districts
 import com.group.database.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Command
@@ -63,11 +62,8 @@ object VkClient : CallbackApi() {
                     LogicState.DISTRICTS -> {
                         if (payload.contains("district")) {
                             val districtId = parseDistrict(payload)
-                            if (flatParameters.addDistrict(districtId)) {
-                                VkApi.successAddDistrictMsg(msg.fromId, msg.text)
-                            } else {
-                                VkApi.alreadyAddedDistrictMsg(msg.fromId, msg.text)
-                            }
+                            flatParameters.addDistrict(districtId)
+                            VkApi.selectedDistrictsMsg(msg.fromId, flatParameters.districts)
                         } else {
                             when(parseCommand(payload)) {
                                 Command.NEXT -> {
@@ -77,12 +73,11 @@ object VkClient : CallbackApi() {
 
                                 Command.CLEAR -> {
                                     flatParameters.clearDistricts()
-                                    VkApi.clearDistrictsMsg(msg.fromId)
+                                    VkApi.selectedDistrictsMsg(msg.fromId, flatParameters.districts)
                                 }
 
                                 Command.ALL -> {
-                                    val districts = arrayListOf(172, 173, 174, 175, 176, 177)
-                                    flatParameters.addDistricts(districts)
+                                    flatParameters.setAllDistricts()
 
                                     VkApi.roomsMsg(msg.fromId)
                                     user.state = LogicState.COUNT_ROOM
@@ -96,44 +91,71 @@ object VkClient : CallbackApi() {
                     LogicState.COUNT_ROOM -> {
                         when(parseCountRoomCommand(payload)) {
                             CountRoomCommand.ROOM_1 -> {
-
+                                flatParameters.addCountRoom("1")
+                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_2 -> {
-
+                                flatParameters.addCountRoom("2")
+                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_3 -> {
-
+                                flatParameters.addCountRoom("3")
+                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_MORE_3 -> {
-
+                                flatParameters.addCountRoom("3+")
+                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.NEXT -> {
-                                VkApi.roomsMsg(msg.fromId)
-                                user.state = LogicState.COUNT_ROOM
+                                VkApi.priceMsg(msg.fromId)
+                                user.state = LogicState.PRICE
                             }
 
                             CountRoomCommand.CLEAR -> {
-                                flatParameters.clearDistricts()
-                                VkApi.clearDistrictsMsg(msg.fromId)
+                                flatParameters.clearRooms()
+                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ALL -> {
-                                val districts = arrayListOf(172, 173, 174, 175, 176, 177)
-                                flatParameters.addDistricts(districts)
+                                flatParameters.setAllRooms()
 
-                                VkApi.roomsMsg(msg.fromId)
-                                user.state = LogicState.COUNT_ROOM
+                                VkApi.priceMsg(msg.fromId)
+                                user.state = LogicState.PRICE
                             }
 
                             else -> VkApi.wrongCommandMsg(msg.fromId)
                         }
                     }
 
-                    LogicState.PRICE -> TODO()
+                    LogicState.PRICE -> {
+                        if (payload == null) {
+                            val text = msg.text
+                                .trim()
+                                .replace(Regex(" +"), " ")
+                                .toLowerCase()
+
+                            if (!isPriceMsg(text)) {
+                                VkApi.wrongPriceMsg(msg.fromId)
+                                return@transaction
+                            }
+
+                            flatParameters.setPriceInterval(parsePrice(text))
+                            user.state = LogicState.LANDLORD
+                        } else {
+                            when (parseCommand(payload)) {
+                                Command.ALL -> {
+                                    flatParameters.setAnyPrice()
+                                    user.state = LogicState.LANDLORD
+                                }
+                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                            }
+                        }
+                    }
+
                     LogicState.LANDLORD -> TODO()
                     LogicState.SEARCH_IN_PROGRESS -> TODO()
                 }

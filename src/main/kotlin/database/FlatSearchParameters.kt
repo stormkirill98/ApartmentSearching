@@ -38,17 +38,39 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
     var endPrice by FlatSearchParametersTable.endPrice
     var onlyOwner by FlatSearchParametersTable.onlyOwner
 
-    fun addDistrict(districtId: String) =
+    fun addDistrict(districtId: String) {
         if (!districts.contains(districtId)) {
             districts += "$districtId,"
-            true
-        } else false
+        }
+    }
 
     fun clearDistricts() {
         districts = ""
     }
 
-    fun addDistricts(districts: ArrayList<Int>) {
-        this.districts = districts.joinToString()
+    fun setAllDistricts() = clearDistricts()
+
+    fun addCountRoom(countRoom: String) {
+        if (!rooms.contains(countRoom)) {
+            rooms += "$countRoom,"
+        }
     }
+
+    fun clearRooms() {
+        rooms = ""
+    }
+
+    fun setAllRooms() = clearRooms()
+
+    fun setPriceInterval(priceInterval: Pair<Int, Int>) {
+        if (priceInterval.second > priceInterval.first) {
+            startPrice = priceInterval.first
+            endPrice = priceInterval.second
+        } else {
+            startPrice = priceInterval.second
+            endPrice = priceInterval.first
+        }
+    }
+
+    fun setAnyPrice() = setPriceInterval(0 to 0)
 }

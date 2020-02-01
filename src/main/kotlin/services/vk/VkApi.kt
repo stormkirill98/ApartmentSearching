@@ -49,20 +49,39 @@ object VkApi {
         sendMsg(peerId, "Выберите кол-во квартир, которое вам подходит", Keyboards.COUNT_ROOMS)
     }
 
-    fun successAddDistrictMsg(peerId: Int, district: String) {
-        sendMsg(peerId, "Район: $district был успешно добавлен в параметры поиска")
+    fun selectedDistrictsMsg(peerId: Int, districts: String) {
+        //TODO: output id's, but need names
+        val msg = if (districts.isEmpty())
+            "Нет выбранных районов. Квартиры будут искаться по всему городу"
+        else "Выбранные районы: $districts"
+        sendMsg(peerId, msg)
     }
 
-    fun alreadyAddedDistrictMsg(peerId: Int, district: String) {
-        sendMsg(peerId, "Район: $district уже был добавлен")
+    fun selectedRoomsMsg(peerId: Int, rooms: String) {
+        val msg = if (rooms.isEmpty())
+            "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат"
+        else "Выбранное кол-во комнат: $rooms"
+        sendMsg(peerId, msg)
     }
 
-    fun clearDistrictsMsg(peerId: Int) {
-        sendMsg(peerId, "Выбранные районы были сброшены. В таком случае поиск будет выполняться по всем районам")
+    fun priceMsg(peerId: Int) {
+        sendMsg(
+            peerId,
+            "Введите диапазон цен в формате: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)",
+            Keyboards.PRICE
+        )
+    }
+
+    fun wrongPriceMsg(peerId: Int) {
+        sendMsg(
+            peerId,
+            "Введенный диапазон цен не соответствует формату\n" +
+                    "Правильный формат: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)"
+        )
     }
 
     fun wrongCommandMsg(peerId: Int) {
-        sendMsg(peerId, "Неверная комманда")
+        sendMsg(peerId, "Неверная команда")
     }
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
