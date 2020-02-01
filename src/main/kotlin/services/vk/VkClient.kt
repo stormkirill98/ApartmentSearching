@@ -4,6 +4,7 @@ import com.group.database.User
 import com.group.services.getProperty
 import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.CountRoomCommand
+import com.group.services.vk.enums.LandlordCommand
 import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -150,14 +151,100 @@ object VkClient : CallbackApi() {
                                 Command.ALL -> {
                                     flatParameters.setAnyPrice()
                                     user.state = LogicState.LANDLORD
+                                    VkApi.landlordMsg(msg.fromId)
                                 }
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
 
-                    LogicState.LANDLORD -> TODO()
-                    LogicState.SEARCH_IN_PROGRESS -> TODO()
+                    LogicState.LANDLORD -> {
+                        if (payload == null) {
+                            VkApi.wrongCommandMsg(msg.fromId)
+                        } else {
+                            when(parseLandlordCommand(payload)) {
+                                LandlordCommand.ALL -> {
+                                    flatParameters.onlyOwner = false
+                                    user.state = LogicState.CONFIRM
+                                    VkApi.confirmMsg(msg.fromId, flatParameters.getMsg())
+                                }
+
+                                LandlordCommand.ONLY_OWNER -> {
+                                    flatParameters.onlyOwner = true
+                                    user.state = LogicState.CONFIRM
+                                    VkApi.confirmMsg(msg.fromId, flatParameters.getMsg())
+                                }
+
+                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                            }
+                        }
+                    }
+
+                    LogicState.CONFIRM -> {
+                        if (payload == null) {
+                            VkApi.wrongCommandMsg(msg.fromId)
+                        } else {
+                            when(parseCommand(payload)) {
+                                Command.CHANGE -> {
+                                    // TODO: reset parameters or ask about every parameter
+                                    user.state = LogicState.DISTRICTS
+                                    VkApi.districtsMsg(msg.fromId)
+                                }
+
+                                Command.START -> {
+                                    user.state = LogicState.SEARCH_IN_PROGRESS
+                                    VkApi.searchMsg(msg.fromId)
+                                }
+
+                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                            }
+                        }
+                    }
+
+                    LogicState.SEARCH_IN_PROGRESS -> {
+                        if (payload == null) {
+                            VkApi.wrongCommandMsg(msg.fromId)
+                        } else {
+                            when(parseCommand(payload)) {
+                                Command.CHANGE -> {
+                                    // TODO: reset parameters or ask about every parameter
+                                    // TODO: stop searching
+                                    user.state = LogicState.DISTRICTS
+                                    VkApi.districtsMsg(msg.fromId)
+                                }
+
+                                Command.STOP -> {
+                                    // TODO: stop searching
+                                    user.state = LogicState.WAIT
+                                    VkApi.waitMsg(msg.fromId)
+                                }
+
+                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                            }
+                        }
+                    }
+
+                    LogicState.WAIT -> {
+                        if (payload == null) {
+                            VkApi.wrongCommandMsg(msg.fromId)
+                        } else {
+                            when(parseCommand(payload)) {
+                                Command.CHANGE -> {
+                                    // TODO: reset parameters or ask about every parameter
+                                    // TODO: stop searching
+                                    user.state = LogicState.DISTRICTS
+                                    VkApi.districtsMsg(msg.fromId)
+                                }
+
+                                Command.CONTINUE -> {
+                                    user.state = LogicState.SEARCH_IN_PROGRESS
+                                    VkApi.searchMsg(msg.fromId)
+                                }
+
+                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                            }
+                        }
+                    }
                 }
             }
         }

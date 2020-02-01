@@ -72,11 +72,27 @@ object VkApi {
         )
     }
 
+    fun landlordMsg(peerId: Int) {
+        sendMsg(peerId, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
+    }
+
+    fun confirmMsg(peerId: Int, text:String) {
+        sendMsg(peerId, text, Keyboards.CONFIRM)
+    }
+
+    fun searchMsg(peerId: Int) {
+        sendMsg(peerId, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
+    }
+
+    fun waitMsg(peerId: Int) {
+        TODO("not implemented")
+    }
+
     fun wrongPriceMsg(peerId: Int) {
         sendMsg(
             peerId,
             "Введенный диапазон цен не соответствует формату\n" +
-                    "Правильный формат: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)"
+                  "Правильный формат: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)"
         )
     }
 

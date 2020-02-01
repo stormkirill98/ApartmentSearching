@@ -73,4 +73,27 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun setAnyPrice() = setPriceInterval(0 to 0)
+
+    fun getMsg(): String {
+        val priceInterval = when {
+            startPrice == 0 && endPrice == 0 -> "любая"
+            startPrice == 0 -> "до $endPrice"
+            endPrice == 0 -> "от $startPrice"
+            else -> "от $startPrice до $endPrice"
+        }
+
+        return """
+            Проверьте параметры поиска, которые вы задали:
+            
+            1. $city
+            
+            2. Районы: ${ if (districts.isEmpty()) "любой" else districts.dropLast(1) }
+            
+            3. Кол-во комнат: ${ if (rooms.isEmpty()) "любое" else rooms.dropLast(1) }
+            
+            4. Цена: $priceInterval
+            
+            5. ${ if (onlyOwner) "Только собственник" else "От собственника и от агенства" }
+        """.trimIndent()
+    }
 }

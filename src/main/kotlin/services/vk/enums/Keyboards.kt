@@ -5,6 +5,7 @@ import com.vk.api.sdk.objects.messages.*
 enum class Keyboards(val keyboard: Keyboard) {
     MAIN(
         Keyboard()
+            .setInline(false)
             .setOneTime(true)
             .setButtons(
                 listOf(
@@ -51,7 +52,7 @@ enum class Keyboards(val keyboard: Keyboard) {
             )
     ),
 
-    Continue(
+    WAIT(
         Keyboard()
             .setInline(false)
             .setOneTime(true)
@@ -60,20 +61,20 @@ enum class Keyboards(val keyboard: Keyboard) {
                     listOf(
                         KeyboardButton().apply
                         {
-                            color = KeyboardButtonColor.POSITIVE
-                            action = KeyboardButtonAction().apply {
-                                type = KeyboardButtonActionType.TEXT
-                                payload = "{\"command\":\"${Command.CONTINUE}\"}"
-                                label = "Продолжить поиск"
-                            }
-                        },
-                        KeyboardButton().apply
-                        {
                             color = KeyboardButtonColor.PRIMARY
                             action = KeyboardButtonAction().apply {
                                 type = KeyboardButtonActionType.TEXT
                                 payload = "{\"command\":\"${Command.CHANGE}\"}"
-                                label = "Изменить параметры"
+                                label = "Изменить"
+                            }
+                        },
+                        KeyboardButton().apply
+                        {
+                            color = KeyboardButtonColor.POSITIVE
+                            action = KeyboardButtonAction().apply {
+                                type = KeyboardButtonActionType.TEXT
+                                payload = "{\"command\":\"${Command.CONTINUE}\"}"
+                                label = "Продолжить"
                             }
                         }
                     )
@@ -280,5 +281,60 @@ enum class Keyboards(val keyboard: Keyboard) {
                     )
                 )
             )
-    )
+    ),
+
+    LANDLORDS(
+        Keyboard()
+        .setInline(false)
+        .setOneTime(true)
+        .setButtons(
+            listOf(
+                listOf(
+                    KeyboardButton().apply {
+                        color = KeyboardButtonColor.NEGATIVE
+                        action = KeyboardButtonAction().apply {
+                            type = KeyboardButtonActionType.TEXT
+                            payload = "{\"command\":\"${LandlordCommand.ALL}\"}"
+                            label = "Без разницы"
+                        }
+                    },
+                    KeyboardButton().apply {
+                        color = KeyboardButtonColor.PRIMARY
+                        action = KeyboardButtonAction().apply {
+                            type = KeyboardButtonActionType.TEXT
+                            payload = "{\"command\":\"${LandlordCommand.ONLY_OWNER}\"}"
+                            label = "Собственник"
+                        }
+                    }
+                )
+            )
+        )
+    ),
+
+    CONFIRM(
+        Keyboard()
+        .setInline(false)
+        .setOneTime(true)
+        .setButtons(
+            listOf(
+                listOf(
+                    KeyboardButton().apply {
+                        color = KeyboardButtonColor.PRIMARY
+                        action = KeyboardButtonAction().apply {
+                            type = KeyboardButtonActionType.TEXT
+                            payload = "{\"command\":\"${Command.CHANGE}\"}"
+                            label = "Изменить"
+                        }
+                    },
+                    KeyboardButton().apply {
+                        color = KeyboardButtonColor.POSITIVE
+                        action = KeyboardButtonAction().apply {
+                            type = KeyboardButtonActionType.TEXT
+                            payload = "{\"command\":\"${Command.START}\"}"
+                            label = "Паконим"
+                        }
+                    }
+                )
+            )
+        ))
 }
