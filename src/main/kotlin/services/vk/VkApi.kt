@@ -88,6 +88,10 @@ object VkApi {
         TODO("not implemented")
     }
 
+    fun groupLeaveMsg(peerId: Int) {
+        VkApi.sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
+    }
+
     fun wrongPriceMsg(peerId: Int) {
         sendMsg(
             peerId,

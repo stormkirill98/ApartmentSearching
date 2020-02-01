@@ -336,5 +336,13 @@ enum class Keyboards(val keyboard: Keyboard) {
                     }
                 )
             )
-        ))
+        )
+    ),
+
+    EMPTY(
+        Keyboard()
+            .setInline(false)
+            .setOneTime(true)
+            .setButtons(listOf(listOf()))
+    )
 }

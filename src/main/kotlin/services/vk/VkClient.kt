@@ -2,10 +2,7 @@ package com.group.services.vk
 
 import com.group.database.User
 import com.group.services.getProperty
-import com.group.services.vk.enums.Command
-import com.group.services.vk.enums.CountRoomCommand
-import com.group.services.vk.enums.LandlordCommand
-import com.group.services.vk.enums.LogicState
+import com.group.services.vk.enums.*
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
@@ -254,6 +251,12 @@ object VkClient : CallbackApi() {
         message?.let {
             if (User.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")
+
+                transaction {
+                    val user = User.get(message.userId)
+                    user.state = LogicState.WAIT
+                }
+
                 VkApi.continueMsg(it.userId)
             } else {
                 logger.info("Group Join User=${it.userId}. New user")
@@ -268,7 +271,7 @@ object VkClient : CallbackApi() {
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {
         message?.let {
             logger.info("Group Leave User='${it.userId}'")
-            VkApi.sendMsg(it.userId, "Вы уходите? Надемся вы нашли, что искали)")
+            VkApi.groupLeaveMsg(it.userId)
 
             transaction {
                 val user = User.get(message.userId)
