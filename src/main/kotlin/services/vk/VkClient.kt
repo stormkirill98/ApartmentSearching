@@ -92,6 +92,7 @@ object VkClient : CallbackApi() {
                     }
 
                     LogicState.COUNT_ROOM -> {
+                        // TODO: add studio
                         when(parseCountRoomCommand(payload)) {
                             CountRoomCommand.ROOM_1 -> {
                                 flatParameters.addCountRoom("1")
