@@ -143,6 +143,8 @@ object VkClient : CallbackApi() {
 
                             flatParameters.setPriceInterval(parsePrice(text))
                             user.state = LogicState.LANDLORD
+                            user.state = LogicState.LANDLORD
+                            VkApi.landlordMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.ALL -> {
