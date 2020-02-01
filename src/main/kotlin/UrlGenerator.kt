@@ -8,7 +8,7 @@ object UrlGenerator {
         val url = StringBuilder("https://www.avito.ru/")
 
         val city = transliterateCyrillicToLatin(flatParameters.city.trim())
-        url.append("$city/kvartiry/sdam?s=104") // s = 104 - порядок по дате
+        url.append("$city/kvartiry/sdam/na_dlitelnyy_srok?s=104") // s = 104 - порядок по дате
 
         val district = flatParameters.districts.dropLast(1)
         if (district.isNotEmpty())
