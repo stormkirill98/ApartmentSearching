@@ -38,7 +38,7 @@ object VkApi {
     }
 
     fun continueMsg(peerId: Int) {
-        sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.Continue)
+        sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
     }
 
     fun districtsMsg(peerId: Int) {
