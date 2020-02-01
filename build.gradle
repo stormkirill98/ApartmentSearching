@@ -50,6 +50,7 @@ dependencies {
     compile "com.google.appengine:appengine-api-1.0-sdk:$appengine_version"
 
     compile "com.ibm.icu:icu4j:$icu4j_version"
+    compile "org.jsoup:jsoup:$jsoup"
 }
 
 task run(dependsOn: appengineRun)

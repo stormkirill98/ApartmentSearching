@@ -6,6 +6,8 @@ import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
 import org.slf4j.LoggerFactory
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
 
 object VkApi {
@@ -76,7 +78,7 @@ object VkApi {
         sendMsg(peerId, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
     }
 
-    fun confirmMsg(peerId: Int, text:String) {
+    fun confirmMsg(peerId: Int, text: String) {
         sendMsg(peerId, text, Keyboards.CONFIRM)
     }
 
@@ -115,5 +117,17 @@ object VkApi {
         keyboard?.let { sender.keyboard(keyboard.keyboard) }
 
         sender.execute()
+    }
+
+    fun sendApartment(name: String, date: Calendar, url: String, price: String, address: String, images: List<String>) {
+        sendMsg(139035212,
+            """ 
+                $name
+                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(date.time)}
+                Цена: $price
+                Адрес: $address
+                $url
+                ${images.joinToString(separator = " ")}
+            """.trimIndent())
     }
 }
