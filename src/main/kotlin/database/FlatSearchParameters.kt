@@ -22,7 +22,7 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<FlatSearchParameters>(FlatSearchParametersTable) {
         fun newByDefault() = transaction {
             return@transaction new {
-                city = "Ярославль"
+                city = "ярославль"
                 districts = ""
                 rooms = ""
                 startPrice = 0

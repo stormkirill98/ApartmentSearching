@@ -311,7 +311,7 @@ enum class Keyboards(val keyboard: Keyboard) {
                         action = KeyboardButtonAction().apply {
                             type = KeyboardButtonActionType.TEXT
                             payload = "{\"command\":\"${Command.START}\"}"
-                            label = "Паконим"
+                            label = "Поиск"
                         }
                     }
                 )

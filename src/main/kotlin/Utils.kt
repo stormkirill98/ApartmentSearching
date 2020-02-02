@@ -2,7 +2,10 @@ package com.group
 
 import com.google.appengine.api.utils.SystemProperty
 import com.group.services.vk.VkClient
+import java.io.File
+import java.net.URL
 import java.util.*
+import javax.imageio.ImageIO
 
 fun getProperty(propName: String): String {
     val propFile = VkClient::class.java.getResource("/config.properties")
@@ -23,3 +26,10 @@ fun nowCalendar(): Calendar {
 }
 
 fun isProduction() = SystemProperty.environment.value() == SystemProperty.Environment.Value.Production
+
+fun getPhoto(url: String): File {
+    val img = ImageIO.read(URL(url))
+    val file = File("photo.jpg")
+    ImageIO.write(img, "jpg", file)
+    return file
+}

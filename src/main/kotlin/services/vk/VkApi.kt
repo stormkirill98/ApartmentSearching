@@ -1,11 +1,13 @@
 package com.group.services.vk
 
+import com.group.getPhoto
 import com.group.getProperty
 import com.group.parsing.Apartment
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
+import com.vk.api.sdk.objects.photos.Photo
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import kotlin.random.Random
@@ -48,11 +50,11 @@ object VkApi {
     }
 
     fun roomsMsg(peerId: Int) {
-        sendMsg(peerId, "Выберите кол-во квартир, которое вам подходит", Keyboards.COUNT_ROOMS)
+        sendMsg(peerId, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
     }
 
     fun selectedDistrictsMsg(peerId: Int, districts: String) {
-        //TODO: output id's, but need names
+        //TODO: print id's, but need names
         val msg = if (districts.isEmpty())
             "Нет выбранных районов. Квартиры будут искаться по всему городу"
         else "Выбранные районы: $districts"
@@ -105,12 +107,27 @@ object VkApi {
         sendMsg(peerId, "Неверная команда")
     }
 
+    fun sendApartment(peerId: Int, apartment: Apartment) {
+        createSender()
+            .peerId(peerId)
+            .message(
+                """ 
+                ${apartment.name}
+                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(apartment.date.time)}
+                Цена: ${apartment.price}
+                Адрес: ${apartment.address}
+                ${apartment.url}
+            """.trimIndent()
+            )
+//            .attachment(getPhotoAttachments(apartment.images))
+            .dontParseLinks(true)
+            .execute()
+    }
+
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
 
-        val sender = vkApi.messages()
-            .send(actor)
-            .randomId(Random.nextInt())
+        val sender = createSender()
             .peerId(peerId)
             .message(msg)
 
@@ -119,17 +136,41 @@ object VkApi {
         sender.execute()
     }
 
-    fun sendApartment(peerId: Int, apartment: Apartment) {
-        sendMsg(
-            peerId,
-            """ 
-                ${apartment.name}
-                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(apartment.date.time)}
-                Цена: ${apartment.price}
-                Адрес: ${apartment.address}
-                ${apartment.url}
-                ${apartment.images.joinToString(separator = " ")}
-            """.trimIndent()
-        )
+    private fun createSender() = vkApi.messages().send(actor).randomId(Random.nextInt())
+
+    private fun getPhotoAttachments(imageUrls: List<String>): String {
+        val attachments = StringBuilder()
+
+        for (imageUrl in imageUrls) {
+            if (imageUrl.isBlank())
+                continue
+
+            val photo = savePhoto(imageUrl)
+            attachments.append(attachmentFromPhoto(photo)).append(",")
+        }
+
+        return attachments.toString()
+    }
+
+    private fun attachmentFromPhoto(photo: Photo) = "photo${photo.ownerId}_${photo.id}"
+
+    private fun savePhoto(url: String): Photo {
+        val file = getPhoto(url)
+
+        val uploadServer = vkApi.photos()
+            .getMessagesUploadServer(actor)
+            .execute()
+
+        val uploadResponse = vkApi.upload()
+            .photoMessage(uploadServer.uploadUrl.toString(), file)
+            .execute()
+
+        val photos = vkApi.photos()
+            .saveMessagesPhoto(actor, uploadResponse.photo)
+            .server(uploadResponse.server)
+            .hash(uploadResponse.hash)
+            .execute()
+
+        return photos.last()
     }
 }
