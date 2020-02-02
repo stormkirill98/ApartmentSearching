@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val HOUR = 3600
+private const val HOUR = 3_600_000
 
 object AvitoParser {
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
@@ -27,7 +27,7 @@ object AvitoParser {
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
                 if (dateDifference > 5 * HOUR && !isRaised)
-                    return
+                    break
 
                 val header = el.select("div.item_table-header")[0]
 
@@ -37,6 +37,7 @@ object AvitoParser {
                 val address = getAddress(el)
                 val images = getImages(el)
 
+                // TODO: send async
                 VkApi.sendApartment(name, date, flatUrl, price, address, images)
             }
         }
