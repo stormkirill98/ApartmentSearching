@@ -1,32 +1,41 @@
 package com.group.parsing
 
+import com.group.nowCalendar
+import com.group.nowDate
 import com.group.services.vk.VkApi
-import com.group.services.vk.VkClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val HOUR = 3600
+private const val HOUR = 3600
 
 object AvitoParser {
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
 
     fun parse(url: String) {
         Jsoup.connect(url).get().run {
-            select("div.item__line").forEach loop@{
-                val date = getDate(it)
-                if (Date().time - date.timeInMillis > 5 * HOUR && !isRaised(it))
-                    return@loop
+            for (el in select("div.item__line")) {
+                val date = getDate(el)
+                val dateDifference = nowDate().time - date.timeInMillis
+                val isRaised = isRaised(el)
 
-                val header = it.select("div.item_table-header")[0]
+                // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
+                if (dateDifference > 5 * HOUR && isRaised)
+                    continue
+
+                // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
+                if (dateDifference > 5 * HOUR && !isRaised)
+                    return
+
+                val header = el.select("div.item_table-header")[0]
 
                 val name = getName(header)
                 val flatUrl = getUrl(header)
                 val price = getPrice(header)
-                val address = getAddress(it)
-                val images = getImages(it)
+                val address = getAddress(el)
+                val images = getImages(el)
 
                 VkApi.sendApartment(name, date, flatUrl, price, address, images)
             }
@@ -45,9 +54,9 @@ object AvitoParser {
 
         val dateDiv = div.select("div.js-item-date")
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
-        val date = Calendar.getInstance()
+        val date = nowCalendar()
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm Z")
         logger.info("Now date: ${formatter.format(date.time)}, flat date: $dateStr")
 
         when {
@@ -70,7 +79,7 @@ object AvitoParser {
 
     private fun isRaised(div: Element) = div.select("div.vas-applied_bottom").size > 0
 
-    private fun getUrl(div: Element): String  {
+    private fun getUrl(div: Element): String {
         return "https://www.avito.ru" + div.select("a.snippet-link")[0].attr("href")
     }
 

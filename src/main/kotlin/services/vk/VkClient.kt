@@ -3,7 +3,7 @@ package com.group.services.vk
 import com.group.UrlGenerator
 import com.group.database.User
 import com.group.parsing.AvitoParser
-import com.group.services.getProperty
+import com.group.getProperty
 import com.group.services.vk.enums.*
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
@@ -248,6 +248,8 @@ object VkClient : CallbackApi() {
                                 Command.CONTINUE -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
+                                    val url = UrlGenerator.getAvitoUrl(flatParameters)
+                                    AvitoParser.parse(url)
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)

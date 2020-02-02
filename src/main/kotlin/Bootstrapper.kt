@@ -8,21 +8,24 @@ import javax.servlet.ServletContextListener
 class Bootstrapper : ServletContextListener {
     override fun contextInitialized(sce: ServletContextEvent) {
         // maybe is KOSTYL. Add your host to white list!
+        if (isProduction()) {
+            Database.connect(
+                "jdbc:postgresql:///postgres" +
+                        "?cloudSqlInstance=apartment-searching:europe-west3:myinstance" +
+                        "&socketFactory=com.google.cloud.sql.postgres.SocketFactory",
+                driver = "org.postgresql.Driver",
+                user = "postgres",
+                password = "admin"
+            )
+        } else {
+            Database.connect(
+                "jdbc:postgresql://35.242.227.75:5432/postgres",
+                driver = "org.postgresql.Driver",
+                user = "postgres",
+                password = "admin"
+            )
+        }
 
-        /*Database.connect(
-            "jdbc:postgresql://35.242.227.75:5432/postgres",
-            driver = "org.postgresql.Driver",
-            user = "postgres",
-            password = "admin"
-        )*/
-        Database.connect(
-            "jdbc:postgresql:///postgres" +
-                    "?cloudSqlInstance=apartment-searching:europe-west3:myinstance" +
-                    "&socketFactory=com.google.cloud.sql.postgres.SocketFactory",
-            driver = "org.postgresql.Driver",
-            user = "postgres",
-            password = "admin"
-        )
     }
 
     override fun contextDestroyed(sce: ServletContextEvent) {}

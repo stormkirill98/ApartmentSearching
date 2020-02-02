@@ -1,6 +1,6 @@
 package com.group.services.vk
 
-import com.group.services.getProperty
+import com.group.getProperty
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
