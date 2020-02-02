@@ -1,10 +1,15 @@
 package com.group.services.vk
 
 import com.group.UrlGenerator
+import com.group.database.FlatSearchParameters
 import com.group.database.User
-import com.group.parsing.AvitoParser
 import com.group.getProperty
-import com.group.services.vk.enums.*
+import com.group.parsing.Apartment
+import com.group.parsing.AvitoParser
+import com.group.services.vk.enums.Command
+import com.group.services.vk.enums.CountRoomCommand
+import com.group.services.vk.enums.LandlordCommand
+import com.group.services.vk.enums.LogicState
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
@@ -70,7 +75,7 @@ object VkClient : CallbackApi() {
                             flatParameters.addDistrict(districtId)
                             VkApi.selectedDistrictsMsg(msg.fromId, flatParameters.districts)
                         } else {
-                            when(parseCommand(payload)) {
+                            when (parseCommand(payload)) {
                                 Command.NEXT -> {
                                     VkApi.roomsMsg(msg.fromId)
                                     user.state = LogicState.COUNT_ROOM
@@ -95,7 +100,7 @@ object VkClient : CallbackApi() {
 
                     LogicState.COUNT_ROOM -> {
                         // TODO: add studio
-                        when(parseCountRoomCommand(payload)) {
+                        when (parseCountRoomCommand(payload)) {
                             CountRoomCommand.ROOM_1 -> {
                                 flatParameters.addCountRoom("1")
                                 VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
@@ -168,7 +173,7 @@ object VkClient : CallbackApi() {
                         if (payload == null) {
                             VkApi.wrongCommandMsg(msg.fromId)
                         } else {
-                            when(parseLandlordCommand(payload)) {
+                            when (parseLandlordCommand(payload)) {
                                 LandlordCommand.ALL -> {
                                     flatParameters.onlyOwner = false
                                     user.state = LogicState.CONFIRM
@@ -190,7 +195,7 @@ object VkClient : CallbackApi() {
                         if (payload == null) {
                             VkApi.wrongCommandMsg(msg.fromId)
                         } else {
-                            when(parseCommand(payload)) {
+                            when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     user.state = LogicState.DISTRICTS
@@ -200,9 +205,7 @@ object VkClient : CallbackApi() {
                                 Command.START -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
-                                    // TODO: run search
-                                    val url = UrlGenerator.getAvitoUrl(flatParameters)
-                                    AvitoParser.parse(url)
+                                    runSearch(msg.fromId, flatParameters)
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
@@ -214,7 +217,7 @@ object VkClient : CallbackApi() {
                         if (payload == null) {
                             VkApi.wrongCommandMsg(msg.fromId)
                         } else {
-                            when(parseCommand(payload)) {
+                            when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     // TODO: stop searching
@@ -237,7 +240,7 @@ object VkClient : CallbackApi() {
                         if (payload == null) {
                             VkApi.wrongCommandMsg(msg.fromId)
                         } else {
-                            when(parseCommand(payload)) {
+                            when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     // TODO: stop searching
@@ -248,8 +251,8 @@ object VkClient : CallbackApi() {
                                 Command.CONTINUE -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
-                                    val url = UrlGenerator.getAvitoUrl(flatParameters)
-                                    AvitoParser.parse(url)
+
+                                    runSearch(msg.fromId, flatParameters)
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
@@ -294,5 +297,14 @@ object VkClient : CallbackApi() {
 
             // TODO: stop searching
         }
+    }
+
+    private fun runSearch(userId: Int, flatSearchParameters: FlatSearchParameters) {
+        fun sendFlat(apartment: Apartment) {
+            VkApi.sendApartment(userId, apartment)
+        }
+
+        val url = UrlGenerator.getAvitoUrl(flatSearchParameters)
+        AvitoParser.parse(url, ::sendFlat)
     }
 }

@@ -11,12 +11,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.request.receiveStream
-import io.ktor.request.receiveText
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import org.slf4j.LoggerFactory
 
 
 fun Application.module() {
@@ -34,8 +32,6 @@ fun Application.module() {
         allowCredentials = true
         host("api.vk.com")
     }
-
-    val logger = LoggerFactory.getLogger(VkClient::class.java)
 
     routing {
         get("/") {

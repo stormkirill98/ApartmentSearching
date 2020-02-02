@@ -2,7 +2,8 @@ package com.group.parsing
 
 import com.group.nowCalendar
 import com.group.nowDate
-import com.group.services.vk.VkApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -11,10 +12,23 @@ import java.util.*
 
 private const val HOUR = 3_600_000
 
+data class Apartment(
+    val name: String,
+    val date: Calendar,
+    val url: String,
+    val price: String,
+    val address: String,
+    val images: List<String>
+)
+
 object AvitoParser {
+    // TODO: remove in future
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
 
-    fun parse(url: String) {
+    fun parse(
+        url: String,
+        send: (apartment: Apartment) -> Unit
+    ) {
         Jsoup.connect(url).get().run {
             for (el in select("div.item__line")) {
                 val date = getDate(el)
@@ -22,23 +36,25 @@ object AvitoParser {
                 val isRaised = isRaised(el)
 
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
-                if (dateDifference > 5 * HOUR && isRaised)
+                if (dateDifference > HOUR && isRaised)
                     continue
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
-                if (dateDifference > 5 * HOUR && !isRaised)
+                if (dateDifference > HOUR && !isRaised)
                     break
 
                 val header = el.select("div.item_table-header")[0]
 
+                // TODO: try use coroutines for performance improve
                 val name = getName(header)
                 val flatUrl = getUrl(header)
                 val price = getPrice(header)
                 val address = getAddress(el)
                 val images = getImages(el)
 
-                // TODO: send async
-                VkApi.sendApartment(name, date, flatUrl, price, address, images)
+                GlobalScope.launch {
+                    send(Apartment(name, date, flatUrl, price, address, images))
+                }
             }
         }
     }

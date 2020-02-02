@@ -1,13 +1,13 @@
 package com.group.services.vk
 
 import com.group.getProperty
+import com.group.parsing.Apartment
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.random.Random
 
 object VkApi {
@@ -119,15 +119,17 @@ object VkApi {
         sender.execute()
     }
 
-    fun sendApartment(name: String, date: Calendar, url: String, price: String, address: String, images: List<String>) {
-        sendMsg(139035212,
+    fun sendApartment(peerId: Int, apartment: Apartment) {
+        sendMsg(
+            peerId,
             """ 
-                $name
-                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(date.time)}
-                Цена: $price
-                Адрес: $address
-                $url
-                ${images.joinToString(separator = " ")}
-            """.trimIndent())
+                ${apartment.name}
+                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(apartment.date.time)}
+                Цена: ${apartment.price}
+                Адрес: ${apartment.address}
+                ${apartment.url}
+                ${apartment.images.joinToString(separator = " ")}
+            """.trimIndent()
+        )
     }
 }
