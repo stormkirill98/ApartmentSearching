@@ -10,6 +10,7 @@ import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.CountRoomCommand
 import com.group.services.vk.enums.LandlordCommand
 import com.group.services.vk.enums.LogicState
+import com.group.servlets.runSearchApartmentTask
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
@@ -205,7 +206,7 @@ object VkClient : CallbackApi() {
                                 Command.START -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
-                                    runSearch(msg.fromId, flatParameters)
+                                    runSearch(msg.fromId)
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
@@ -252,7 +253,7 @@ object VkClient : CallbackApi() {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
                                     VkApi.searchMsg(msg.fromId)
 
-                                    runSearch(msg.fromId, flatParameters)
+                                    runSearch(msg.fromId)
                                 }
 
                                 else -> VkApi.wrongCommandMsg(msg.fromId)
@@ -299,12 +300,7 @@ object VkClient : CallbackApi() {
         }
     }
 
-    private fun runSearch(userId: Int, flatSearchParameters: FlatSearchParameters) {
-        fun sendFlat(apartment: Apartment) {
-            VkApi.sendApartment(userId, apartment)
-        }
-
-        val url = UrlGenerator.getAvitoUrl(flatSearchParameters)
-        AvitoParser.parse(url, ::sendFlat)
+    private fun runSearch(userId: Int) {
+        runSearchApartmentTask(userId)
     }
 }

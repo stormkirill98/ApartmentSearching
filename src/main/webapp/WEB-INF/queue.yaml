@@ -1,0 +1,6 @@
+queue:
+- name: search-flat
+  rate: 0.5/m
+  retry_parameters:
+    min_backoff_seconds: 300
+    max_doublings: 12

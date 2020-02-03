@@ -14,7 +14,16 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>KtorServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Search Apartment</servlet-name>
+        <servlet-class>com.group.servlets.SearchApartmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Search Apartment</servlet-name>
+        <url-pattern>/tasks/search/flat</url-pattern>
     </servlet-mapping>
 
     <listener>
