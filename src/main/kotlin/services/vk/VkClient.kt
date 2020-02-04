@@ -296,6 +296,9 @@ object VkClient : CallbackApi() {
     }
 
     private fun runSearch(user: User) {
+        if (user.taskId != null)
+            stopSearch(user)
+
         user.taskId = runSearchApartmentTask(user.id.value)
     }
 

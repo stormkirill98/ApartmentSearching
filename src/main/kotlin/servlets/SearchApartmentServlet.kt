@@ -1,5 +1,6 @@
 package com.group.servlets
 
+import com.google.api.gax.rpc.ApiException
 import com.google.cloud.tasks.v2.*
 import com.google.protobuf.Timestamp
 import com.group.UrlGenerator
@@ -73,6 +74,9 @@ fun runSearchApartmentTask(userId: Int): String {
 }
 
 fun removeSearchApartmentTask(taskId: String) {
-    val client = CloudTasksClient.create()
-    client.deleteTask(taskId)
+    CloudTasksClient.create().use {
+        try {
+            it.deleteTask(taskId.trim())
+        } catch (e: ApiException) {}
+    }
 }

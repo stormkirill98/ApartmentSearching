@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.postgresql.util.PGobject
 
-private const val TASK_ID_LENGTH = 50
+private const val TASK_ID_LENGTH = 500
 
 object UserTable : IntIdTable() {
     val origin = customEnumeration("origin", "UserOrigin",
