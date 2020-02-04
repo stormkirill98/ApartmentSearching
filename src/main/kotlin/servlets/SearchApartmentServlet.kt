@@ -34,6 +34,12 @@ class SearchApartmentServlet : HttpServlet() {
             return
         }
 
+        val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
+        log.info("Previous execution task code: $prevCode")
+        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
+            TODO("remove task")
+        }
+
         userId = userIdStr.toInt()
 
         transaction {
@@ -44,7 +50,7 @@ class SearchApartmentServlet : HttpServlet() {
         }
 
         if (!oneFlatFound) VkApi.notFoundFlats(userId)
-        resp.status = HttpServletResponse.SC_BAD_REQUEST
+        resp.status = HttpServletResponse.SC_CONTINUE
     }
 
     private fun sendFlat(apartment: Apartment) {
@@ -81,6 +87,7 @@ fun removeSearchApartmentTask(taskId: String) {
     CloudTasksClient.create().use {
         try {
             it.deleteTask(taskId.trim())
-        } catch (e: ApiException) {}
+        } catch (e: ApiException) {
+        }
     }
 }
