@@ -124,6 +124,10 @@ object VkApi {
             .execute()
     }
 
+    fun notFoundFlats(peerId: Int) {
+        sendMsg(peerId, "За последний час не было выложено новых квартир")
+    }
+
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
 

@@ -23,7 +23,9 @@ private const val QUEUE_NAME = "search-flat"
 @WebServlet(name = "Search Apartment", urlPatterns = [URL_PATTERN])
 class SearchApartmentServlet : HttpServlet() {
     private val log: Logger = Logger.getLogger(SearchApartmentServlet::class.java.name)
-    private var userId: Int = 0;
+    private var userId: Int = 0
+    private var oneFlatFound = false
+
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         val userIdStr = req.getParameter("userId")
         if (userIdStr.isNullOrBlank()) {
@@ -41,10 +43,12 @@ class SearchApartmentServlet : HttpServlet() {
             AvitoParser.parse(url, ::sendFlat)
         }
 
+        if (!oneFlatFound) VkApi.notFoundFlats(userId)
         resp.status = HttpServletResponse.SC_BAD_REQUEST
     }
 
     private fun sendFlat(apartment: Apartment) {
+        oneFlatFound = true
         VkApi.sendApartment(userId, apartment)
     }
 }
