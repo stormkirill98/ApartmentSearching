@@ -3,7 +3,6 @@ package com.group.servlets
 import com.google.cloud.tasks.v2.*
 import com.google.protobuf.Timestamp
 import com.group.UrlGenerator
-import com.group.database.FlatSearchParameters
 import com.group.database.User
 import com.group.parsing.Apartment
 import com.group.parsing.AvitoParser
@@ -49,25 +48,31 @@ class SearchApartmentServlet : HttpServlet() {
     }
 }
 
-fun runSearchApartmentTask(userId: Int) {
-    val client = CloudTasksClient.create()
+fun runSearchApartmentTask(userId: Int): String {
+    CloudTasksClient.create().use {
+        val queuePath = QueueName.of(PROJECT_ID, LOCATION, QUEUE_NAME).toString()
 
-    val queuePath = QueueName.of(PROJECT_ID, LOCATION, QUEUE_NAME).toString()
+        val taskBuilder = Task.newBuilder()
+            .setAppEngineHttpRequest(
+                AppEngineHttpRequest
+                    .newBuilder()
+                    .setRelativeUri("$URL_PATTERN?userId=$userId")
+                    .setHttpMethod(HttpMethod.GET)
+                    .build()
+            )
 
-    val taskBuilder = Task.newBuilder()
-        .setAppEngineHttpRequest(
-            AppEngineHttpRequest
+        taskBuilder.setScheduleTime(
+            Timestamp
                 .newBuilder()
-                .setRelativeUri("$URL_PATTERN?userId=$userId")
-                .setHttpMethod(HttpMethod.GET)
-                .build()
+                .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(5L).epochSecond)
         )
 
-    taskBuilder.setScheduleTime(
-        Timestamp
-            .newBuilder()
-            .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(60L).epochSecond)
-    )
+        val task = it.createTask(queuePath, taskBuilder.build())
+        return task.name
+    }
+}
 
-    client.createTask(queuePath, taskBuilder.build())
+fun removeSearchApartmentTask(taskId: String) {
+    val client = CloudTasksClient.create()
+    client.deleteTask(taskId)
 }

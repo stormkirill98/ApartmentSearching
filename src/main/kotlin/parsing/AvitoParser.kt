@@ -36,12 +36,16 @@ object AvitoParser {
                 val isRaised = isRaised(el)
 
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
-                if (dateDifference > HOUR && isRaised)
+                if (dateDifference > HOUR && isRaised) {
+                    logger.info("Skip flat")
                     continue
+                }
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
-                if (dateDifference > HOUR && !isRaised)
+                if (dateDifference > HOUR && !isRaised) {
+                    logger.info("Break search flat")
                     break
+                }
 
                 val header = el.select("div.item_table-header")[0]
 

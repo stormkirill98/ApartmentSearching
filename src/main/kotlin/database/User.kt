@@ -9,6 +9,8 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.postgresql.util.PGobject
 
+private const val TASK_ID_LENGTH = 50
+
 object UserTable : IntIdTable() {
     val origin = customEnumeration("origin", "UserOrigin",
         { value -> UserOrigin.valueOf(value as String) },
@@ -18,6 +20,7 @@ object UserTable : IntIdTable() {
         { value -> LogicState.valueOf(value as String) },
         { PGEnum("\"LogicState\"", it) })
 
+    val taskId = varchar("task_id", TASK_ID_LENGTH).nullable()
     val searchParameters = reference("search_parameters_id", SearchParametersTable)
 }
 
@@ -39,6 +42,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
 
     var origin by UserTable.origin
     var state by UserTable.state
+    var taskId by UserTable.taskId
     var searchParameters by SearchParameters referencedOn UserTable.searchParameters
 
     override fun toString(): String {
