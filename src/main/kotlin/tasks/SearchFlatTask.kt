@@ -37,11 +37,7 @@ class SearchFlatServlet : HttpServlet() {
         val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
         if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
             removeTask(req)
-            // TODO: rewrite when move taskId
-            transaction {
-                val user = User.get(userId)
-                user.taskId = null
-            }
+            emptyTaskId(userId)
             return
         }
 
@@ -64,6 +60,13 @@ class SearchFlatServlet : HttpServlet() {
     private fun removeTask(req: HttpServletRequest) {
         val taskName = req.getHeader("X-AppEngine-TaskName")
         removeSearchFlatTask("projects/$PROJECT_ID/locations/$LOCATION/queues/my-queue-id/tasks/$taskName")
+    }
+
+    private fun emptyTaskId(userId: Int) {
+        transaction {
+            val user = User.get(userId)
+            user.searchParameters.flatParameters.taskId = null
+        }
     }
 }
 

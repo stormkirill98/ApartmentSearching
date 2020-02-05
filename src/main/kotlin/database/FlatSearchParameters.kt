@@ -1,13 +1,15 @@
 package com.group.database
 
 import com.group.UrlGenerator
+import com.group.database.UserTable.nullable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.transactions.transaction
 
-const val CITY_NAME_LENGTH = 100
+private const val CITY_NAME_LENGTH = 100
+private const val TASK_ID_LENGTH = 500
 
 object FlatSearchParametersTable : IntIdTable() {
     val city = varchar("city", CITY_NAME_LENGTH)
@@ -16,6 +18,7 @@ object FlatSearchParametersTable : IntIdTable() {
     val startPrice = integer("startPrice")
     val endPrice = integer("endPrice")
     val onlyOwner = bool("onlyOwner")
+    val taskId = UserTable.varchar("task_id", TASK_ID_LENGTH).nullable()
 }
 
 class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
@@ -38,6 +41,7 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
     var startPrice by FlatSearchParametersTable.startPrice
     var endPrice by FlatSearchParametersTable.endPrice
     var onlyOwner by FlatSearchParametersTable.onlyOwner
+    var taskId by FlatSearchParametersTable.taskId
 
     fun addDistrict(districtId: String) {
         if (!districts.contains(districtId)) {

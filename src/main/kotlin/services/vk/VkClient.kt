@@ -296,16 +296,16 @@ object VkClient : CallbackApi() {
     }
 
     private fun runSearch(user: User) {
-        if (user.taskId != null)
+        if (user.searchParameters.flatParameters.taskId != null)
             stopSearch(user)
 
-        user.taskId = runSearchFlatTask(user.id.value)
+        user.searchParameters.flatParameters.taskId = runSearchFlatTask(user.id.value)
     }
 
     private fun stopSearch(user: User) {
-        user.taskId?.let {
+        user.searchParameters.flatParameters.taskId?.let {
             removeSearchFlatTask(it)
-            user.taskId = null
+            user.searchParameters.flatParameters.taskId = null
         }
     }
 }
