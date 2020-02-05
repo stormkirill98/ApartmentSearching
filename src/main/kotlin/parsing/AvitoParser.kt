@@ -35,6 +35,9 @@ object AvitoParser {
                 val dateDifference = nowDate().time - date.timeInMillis
                 val isRaised = isRaised(el)
 
+                val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm Z")
+                logger.info("Flat: ${formatter.format(date.time)} isRaised=$isRaised")
+
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
                 if (dateDifference > HOUR && isRaised) {
                     logger.info("Skip flat")
@@ -76,8 +79,6 @@ object AvitoParser {
         val dateDiv = div.select("div.js-item-date")
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
         val date = nowCalendar()
-
-        logger.info("Flat was upload $dateStr")
 
         when {
             dateStr.contains("Сегодня") -> {
