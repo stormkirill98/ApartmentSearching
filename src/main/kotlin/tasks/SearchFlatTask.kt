@@ -22,18 +22,10 @@ private const val QUEUE_NAME = "search-flat"
 
 @WebServlet(name = "Search Apartment", urlPatterns = [URL_PATTERN])
 class SearchFlatServlet : HttpServlet() {
-    private val log: Logger = Logger.getLogger(SearchFlatServlet::class.java.name)
     private var userId: Int = 0
     private var oneFlatFound = false
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
-        val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
-        log.info("Previous execution task code: $prevCode") // TODO: remove in future
-        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
-            removeTask(req)
-            return
-        }
-
         val userIdStr = req.getParameter("userId")
         if (userIdStr.isNullOrBlank()) {
             removeTask(req)
@@ -41,6 +33,17 @@ class SearchFlatServlet : HttpServlet() {
         }
 
         userId = userIdStr.toInt()
+
+        val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
+        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
+            removeTask(req)
+            // TODO: rewrite when move taskId
+            transaction {
+                val user = User.get(userId)
+                user.taskId = null
+            }
+            return
+        }
 
         transaction {
             val user = User.get(userId)

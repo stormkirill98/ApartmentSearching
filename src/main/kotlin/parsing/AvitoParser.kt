@@ -43,7 +43,7 @@ object AvitoParser {
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
                 if (dateDifference > HOUR && !isRaised) {
-                    logger.info("Skip flat: ${formatter.format(date.time)} not raised")
+                    logger.info("Break search on flat: ${formatter.format(date.time)} not raised")
                     break
                 }
 
@@ -93,7 +93,15 @@ object AvitoParser {
         return date
     }
 
-    private fun isRaised(div: Element) = div.select("div.tooltip-tooltip-box-2rApK").size > 0
+    private fun isRaised(div: Element): Boolean {
+        val childDiv = div.select("div.js-vas-list-container").last()
+        childDiv ?: return false
+
+        val dataProps = childDiv.attr("data-props")
+        dataProps ?: return false
+
+        return dataProps != "{\"vas\":[]}"
+    }
 
     private fun getUrl(div: Element): String {
         return "https://www.avito.ru" + div.select("a.snippet-link")[0].attr("href")
