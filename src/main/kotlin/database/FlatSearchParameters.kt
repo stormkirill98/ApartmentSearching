@@ -88,6 +88,7 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
         }
 
         val avitoUrl = UrlGenerator.getAvitoUrl(this)
+        val cianUrl = UrlGenerator.getCianUrl(this)
 
         return """
             Проверьте параметры поиска, которые вы задали:
@@ -102,7 +103,8 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
             
             5. ${ if (onlyOwner) "Только собственник" else "От собственника и от агенства" }
             
-            Сгенерированная ссылка на авито: $avitoUrl
+            Ссылка на авито: $avitoUrl
+            Ссылка на cian: $cianUrl
         """.trimIndent()
     }
 }

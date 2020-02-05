@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO: move class Flat
 data class Flat(
     val name: String,
     val date: Calendar,
