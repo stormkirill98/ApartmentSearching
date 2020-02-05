@@ -77,8 +77,7 @@ object AvitoParser {
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
         val date = nowCalendar()
 
-        val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm Z")
-        logger.info("Now date: ${formatter.format(date.time)}, flat date: $dateStr")
+        logger.info("Flat was upload $dateStr")
 
         when {
             dateStr.contains("Сегодня") -> {
@@ -92,8 +91,6 @@ object AvitoParser {
 
             else -> date.clear()
         }
-
-        logger.info("Date after parse: ${formatter.format(date.time)}")
 
         return date
     }

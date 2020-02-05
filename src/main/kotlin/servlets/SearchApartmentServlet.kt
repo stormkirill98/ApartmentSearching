@@ -34,11 +34,11 @@ class SearchApartmentServlet : HttpServlet() {
             return
         }
 
-        val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
+        /*val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
         log.info("Previous execution task code: $prevCode")
         if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
             TODO("remove task")
-        }
+        }*/
 
         userId = userIdStr.toInt()
 
