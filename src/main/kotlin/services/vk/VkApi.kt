@@ -8,6 +8,10 @@ import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
 import com.vk.api.sdk.objects.photos.Photo
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import kotlin.random.Random
@@ -112,20 +116,22 @@ object VkApi {
 
         logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
 
-        createSender()
-            .peerId(peerId)
-            .message(
+        runBlocking {
+            createSender()
+                .peerId(peerId)
+                .message(
                 """ 
-                ${flat.name}
-                Выложено ${dateFormat.format(flat.date.time)}
-                Цена: ${flat.price}
-                Адрес: ${flat.address}
-                ${flat.url}
-            """.trimIndent()
-            )
-            .attachment(getPhotoAttachments(flat.images))
-            .dontParseLinks(true)
-            .execute()
+                    ${flat.name}
+                    Выложено ${dateFormat.format(flat.date.time)}
+                    Цена: ${flat.price}
+                    Адрес: ${flat.address}
+                    ${flat.url}
+                """.trimIndent()
+                )
+                .attachment(getPhotoAttachments(flat.images))
+                .dontParseLinks(true)
+                .execute()
+        }
     }
 
     fun notFoundFlats(peerId: Int) {
@@ -146,31 +152,33 @@ object VkApi {
 
     private fun createSender() = vkApi.messages().send(actor).randomId(Random.nextInt())
 
-    private fun getPhotoAttachments(imageUrls: List<String>): String {
-        val attachments = StringBuilder()
-
+    private suspend fun getPhotoAttachments(imageUrls: List<String>): String {
+        val imageThreads = arrayListOf<Deferred<Photo>>()
         for (imageUrl in imageUrls) {
             if (imageUrl.isBlank())
                 continue
 
-            val photo = savePhoto(imageUrl)
-            attachments.append(attachmentFromPhoto(photo)).append(",")
+            val photoThread = GlobalScope.async { savePhoto(imageUrl) }
+            imageThreads.add(photoThread)
         }
+
+        val attachments = StringBuilder()
+        imageThreads.forEach { attachments.append(attachmentFromPhoto(it.await())).append(",") }
 
         return attachments.toString()
     }
 
     private fun attachmentFromPhoto(photo: Photo) = "photo${photo.ownerId}_${photo.id}"
 
-    private fun savePhoto(url: String): Photo {
-        val file = getPhoto(url)
+    private suspend fun savePhoto(url: String): Photo {
+        val fileThread = GlobalScope.async { getPhoto(url) }
 
         val uploadServer = vkApi.photos()
             .getMessagesUploadServer(actor)
             .execute()
 
         val uploadResponse = vkApi.upload()
-            .photoMessage(uploadServer.uploadUrl.toString(), file)
+            .photoMessage(uploadServer.uploadUrl.toString(), fileThread.await())
             .execute()
 
         val photos = vkApi.photos()
