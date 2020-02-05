@@ -123,7 +123,7 @@ object VkApi {
                 ${flat.url}
             """.trimIndent()
             )
-//            .attachment(getPhotoAttachments(apartment.images))
+            .attachment(getPhotoAttachments(flat.images))
             .dontParseLinks(true)
             .execute()
     }

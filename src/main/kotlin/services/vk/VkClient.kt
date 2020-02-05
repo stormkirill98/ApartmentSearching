@@ -71,7 +71,6 @@ object VkClient : CallbackApi() {
                         if (payload.contains("district")) {
                             val districtId = parseDistrict(payload)
                             flatParameters.addDistrict(districtId)
-                            VkApi.selectedDistrictsMsg(msg.fromId, flatParameters.districts)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.NEXT -> {

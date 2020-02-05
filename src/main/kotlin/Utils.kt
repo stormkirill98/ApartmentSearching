@@ -29,7 +29,7 @@ fun isProduction() = SystemProperty.environment.value() == SystemProperty.Enviro
 
 fun getPhoto(url: String): File {
     val img = ImageIO.read(URL(url))
-    val file = File("photo.jpg")
+    val file = File("/tmp/photo.jpg")
     ImageIO.write(img, "jpg", file)
     return file
 }
