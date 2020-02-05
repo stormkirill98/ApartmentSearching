@@ -1,5 +1,9 @@
 package com.group
 
+import com.group.database.User
+import com.group.parsing.AvitoParser
+import com.group.parsing.Flat
+import com.group.services.vk.VkApi
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -15,6 +19,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
+import org.jetbrains.exposed.sql.transactions.transaction
 
 
 fun Application.module() {
@@ -43,6 +48,18 @@ fun Application.module() {
 
             val (text, status) = VkClient.handleRequest(utf8Str)
             call.respondText(text, status = status, contentType = ContentType.Text.Plain)
+        }
+
+        get("/parse") {
+            fun sendFlat(flat: Flat) {
+                VkApi.sendFlat(139035212, flat)
+            }
+            transaction {
+                val user = User.get(139035212)
+
+                val url = UrlGenerator.getAvitoUrl(user.searchParameters.flatParameters)
+                AvitoParser.parse(url, ::sendFlat)
+            }
         }
     }
 }

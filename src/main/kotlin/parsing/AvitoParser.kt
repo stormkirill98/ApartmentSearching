@@ -22,7 +22,6 @@ data class Flat(
 )
 
 object AvitoParser {
-    // TODO: remove in future
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
 
     fun parse(
@@ -95,7 +94,7 @@ object AvitoParser {
         return date
     }
 
-    private fun isRaised(div: Element) = div.select("div.vas-applied_bottom").size > 0
+    private fun isRaised(div: Element) = div.select("div.tooltip-tooltip-box-2rApK").size > 0
 
     private fun getUrl(div: Element): String {
         return "https://www.avito.ru" + div.select("a.snippet-link")[0].attr("href")
