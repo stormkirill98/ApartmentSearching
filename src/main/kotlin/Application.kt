@@ -2,6 +2,7 @@ package com.group
 
 import com.group.database.User
 import com.group.parsing.AvitoParser
+import com.group.parsing.CianParser
 import com.group.parsing.Flat
 import com.group.services.vk.VkApi
 import com.group.services.vk.VkClient
@@ -57,8 +58,13 @@ fun Application.module() {
             transaction {
                 val user = User.get(139035212)
 
-                val url = UrlGenerator.getAvitoUrl(user.searchParameters.flatParameters)
-                AvitoParser.parse(url, ::sendFlat)
+//                val avitoUrl = UrlGenerator.getAvitoUrl(user.searchParameters.flatParameters)
+//                AvitoParser.parse(avitoUrl, ::sendFlat)
+
+                val cianUrl = UrlGenerator.getCianUrl(user.searchParameters.flatParameters)
+                println(cianUrl)
+
+                CianParser.parse(cianUrl, ::sendFlat)
             }
         }
     }

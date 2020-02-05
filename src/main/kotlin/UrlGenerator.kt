@@ -19,11 +19,11 @@ object UrlGenerator {
             url.append("&$rooms")
 
         val startPrice = flatParameters.startPrice
-        if(startPrice > 0)
+        if (startPrice > 0)
             url.append("&pmin=$startPrice")
 
         val endPrice = flatParameters.endPrice
-        if(endPrice > 0)
+        if (endPrice > 0)
             url.append("&pmax=$endPrice")
 
         if (flatParameters.onlyOwner)
@@ -33,11 +33,69 @@ object UrlGenerator {
     }
 
     fun getCianUrl(flatParameters: FlatSearchParameters): String {
-        val url = StringBuilder("https://yaroslavl.cian.ru")
+        val url =
+            StringBuilder("https://yaroslavl.cian.ru/cat.php?deal_type=rent&engine_version=2&offer_type=flat&totime=3600")
 
+        if (flatParameters.onlyOwner)
+            url.append("&is_by_homeowner=1")
 
+        if (flatParameters.city == "ярославль")
+            url.append("&region=5075")
+
+        if (flatParameters.startPrice != 0)
+            url.append("&minprice=${flatParameters.startPrice}")
+
+        if (flatParameters.endPrice != 0)
+            url.append("&maxprice=${flatParameters.endPrice}")
+
+        url.append(getRoomCianUrlPart(flatParameters.rooms))
+        url.append(getDistrictCianUrlPath(flatParameters.districts))
 
         return url.toString()
+    }
+
+    private fun getRoomCianUrlPart(rooms: String): String {
+        if (rooms.isEmpty()) return ""
+        val roomPartUrl = StringBuilder("")
+
+        if (rooms.contains("1,"))
+            roomPartUrl.append("&room1=1&room9=1")
+
+        if (rooms.contains("2,"))
+            roomPartUrl.append("&room2=1")
+
+        if (rooms.contains("3,"))
+            roomPartUrl.append("&room3=1")
+
+        if (rooms.contains("3+"))
+            roomPartUrl.append("&&room4=1&room5=1&room6=1")
+
+        return roomPartUrl.toString()
+    }
+
+    private fun getDistrictCianUrlPath(districts: String): String {
+        if (districts.isEmpty()) return ""
+        val districtPathUrl = java.lang.StringBuilder("")
+
+        if (districts.contains("172"))
+            districtPathUrl.append("&district%5B0%5D=319")
+
+        if (districts.contains("174"))
+            districtPathUrl.append("&district%5B0%5D=321")
+
+        if (districts.contains("176"))
+            districtPathUrl.append("&district%5B0%5D=323")
+
+        if (districts.contains("177"))
+            districtPathUrl.append("&district%5B0%5D=324")
+
+        if (districts.contains("173"))
+            districtPathUrl.append("&district%5B0%5D=320")
+
+        if (districts.contains("175"))
+            districtPathUrl.append("&district%5B0%5D=322")
+
+        return districtPathUrl.toString()
     }
 
     private fun getRoomAvitoUrlPart(rooms: String): String {

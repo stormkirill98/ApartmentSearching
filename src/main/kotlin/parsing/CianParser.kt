@@ -1,34 +1,48 @@
 package com.group.parsing
 
+import com.group.services.vk.VkApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
 
-fun main() {
-    CianParser.parse("https://yaroslavl.cian.ru/cat.php?deal_type=rent&engine_version=2&offer_type=flat&region=5075&room1=1&room2=1&room3=1&totime=3600&type=4")
-}
-
 object CianParser {
-    fun parse(url: String) {
+    fun parse(
+        url: String,
+        send: (flat: Flat) -> Unit
+    ) {
         Jsoup.connect(url).get().run {
             for (el in select("div.c6e8ba5398--main-container--1FMpY")) {
-                val imagesDiv = el.select("div.c6e8ba5398--media--HK4H1").last()
-                val infoDiv = el.select("div.c6e8ba5398--main--1NDwp").last()
+                val imagesDiv = el.select("div.c6e8ba5398--media--HK4H1").last() ?: continue
+                val infoDiv = el.select("div.c6e8ba5398--main--1NDwp").last() ?: continue
 
-                val date = getDate(infoDiv)
-                val dateDifference = getDifferenceFromNow(date)
+                val dateThread = GlobalScope.async { getDate(infoDiv) }
+                val flatUrlThread = GlobalScope.async { getUrl(infoDiv) }
+                val nameThread = GlobalScope.async { getName(infoDiv) }
+                val priceThread = GlobalScope.async { getPrice(infoDiv) }
+                val addressThread = GlobalScope.async { getAddress(infoDiv) }
+                val imageUrlsThread = GlobalScope.async { getImageUrls(imagesDiv) }
 
-                if (dateDifference > HOUR)
-                    continue
-
-                val name = getName(infoDiv)
-                val price = getPrice(infoDiv)
-                val address = getAddress(infoDiv)
-                val imageUrls = getImageUrls(imagesDiv)
-
-                println("Flat: $name $price $address $imageUrls")
+                GlobalScope.launch {
+                    send(
+                        Flat(
+                            nameThread.await(),
+                            dateThread.await(),
+                            flatUrlThread.await(),
+                            priceThread.await(),
+                            addressThread.await(),
+                            imageUrlsThread.await()
+                        )
+                    )
+                }
             }
         }
+    }
+
+    private fun getUrl(infoDiv: Element): String {
+        return infoDiv.select("a.c6e8ba5398--header--1fV2A").last().attr("href")
     }
 
     private fun getDate(infoDiv: Element): Calendar {
