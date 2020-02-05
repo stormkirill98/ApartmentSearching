@@ -110,7 +110,7 @@ object VkApi {
     fun sendFlat(peerId: Int, flat: Flat) {
         val dateFormat = SimpleDateFormat("MM-dd HH:mm")
 
-        logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)}")
+        logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
 
         createSender()
             .peerId(peerId)
