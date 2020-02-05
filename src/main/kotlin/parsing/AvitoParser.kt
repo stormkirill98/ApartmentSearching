@@ -35,7 +35,6 @@ object AvitoParser {
                 val isRaised = isRaised(el)
 
                 val formatter = SimpleDateFormat("dd-MM HH:mm")
-
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
                 if (dateDifference > HOUR && isRaised) {
                     logger.info("Skip flat: ${formatter.format(date.time)} raised")

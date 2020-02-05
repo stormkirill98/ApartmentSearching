@@ -27,18 +27,18 @@ class SearchFlatServlet : HttpServlet() {
     private var oneFlatFound = false
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
-        val userIdStr = req.getParameter("userId")
-        if (userIdStr.isNullOrBlank()) {
-            log.warning("Wrong user id")
-            resp.status = HttpServletResponse.SC_BAD_REQUEST
+        val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
+        log.info("Previous execution task code: $prevCode") // TODO: remove in future
+        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
+            removeTask(req)
             return
         }
 
-        /*val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
-        log.info("Previous execution task code: $prevCode")
-        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
-            TODO("remove task")
-        }*/
+        val userIdStr = req.getParameter("userId")
+        if (userIdStr.isNullOrBlank()) {
+            removeTask(req)
+            return
+        }
 
         userId = userIdStr.toInt()
 
@@ -56,6 +56,11 @@ class SearchFlatServlet : HttpServlet() {
     private fun sendFlat(flat: Flat) {
         oneFlatFound = true
         VkApi.sendFlat(userId, flat)
+    }
+
+    private fun removeTask(req: HttpServletRequest) {
+        val taskName = req.getHeader("X-AppEngine-TaskName")
+        removeSearchFlatTask("projects/$PROJECT_ID/locations/$LOCATION/queues/my-queue-id/tasks/$taskName")
     }
 }
 
