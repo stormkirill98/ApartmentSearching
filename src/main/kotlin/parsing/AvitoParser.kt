@@ -3,7 +3,9 @@ package com.group.parsing
 import com.group.nowCalendar
 import com.group.nowDate
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -29,6 +31,7 @@ object AvitoParser {
         send: (flat: Flat) -> Unit
     ) {
         Jsoup.connect(url).get().run {
+            // TODO: try to run coroutines for each div with flat
             for (el in select("div.item__line")) {
                 val date = getDate(el)
                 val dateDifference = nowDate().time - date.timeInMillis
@@ -49,15 +52,23 @@ object AvitoParser {
 
                 val header = el.select("div.item_table-header")[0]
 
-                // TODO: try use coroutines for performance improve
-                val name = getName(header)
-                val flatUrl = getUrl(header)
-                val price = getPrice(header)
-                val address = getAddress(el)
-                val images = getImages(el)
+                val nameThread = GlobalScope.async { getName(header) }
+                val flatUrlThread = GlobalScope.async { getUrl(header) }
+                val priceThread = GlobalScope.async { getPrice(header) }
+                val addressThread = GlobalScope.async { getAddress(el) }
+                val imagesThread = GlobalScope.async { getImages(el) }
 
                 GlobalScope.launch {
-                    send(Flat(name, date, flatUrl, price, address, images))
+                    send(
+                        Flat(
+                            nameThread.await(),
+                            date,
+                            flatUrlThread.await(),
+                            priceThread.await(),
+                            addressThread.await(),
+                            imagesThread.await()
+                        )
+                    )
                 }
             }
         }
