@@ -6,8 +6,8 @@ import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.CountRoomCommand
 import com.group.services.vk.enums.LandlordCommand
 import com.group.services.vk.enums.LogicState
-import com.group.servlets.removeSearchApartmentTask
-import com.group.servlets.runSearchApartmentTask
+import com.group.tasks.removeSearchFlatTask
+import com.group.tasks.runSearchFlatTask
 import com.vk.api.sdk.callback.CallbackApi
 import com.vk.api.sdk.objects.callback.GroupJoin
 import com.vk.api.sdk.objects.callback.GroupLeave
@@ -299,12 +299,12 @@ object VkClient : CallbackApi() {
         if (user.taskId != null)
             stopSearch(user)
 
-        user.taskId = runSearchApartmentTask(user.id.value)
+        user.taskId = runSearchFlatTask(user.id.value)
     }
 
     private fun stopSearch(user: User) {
         user.taskId?.let {
-            removeSearchApartmentTask(it)
+            removeSearchFlatTask(it)
             user.taskId = null
         }
     }

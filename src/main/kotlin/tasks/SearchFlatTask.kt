@@ -1,11 +1,11 @@
-package com.group.servlets
+package com.group.tasks
 
 import com.google.api.gax.rpc.ApiException
 import com.google.cloud.tasks.v2.*
 import com.google.protobuf.Timestamp
 import com.group.UrlGenerator
 import com.group.database.User
-import com.group.parsing.Apartment
+import com.group.parsing.Flat
 import com.group.parsing.AvitoParser
 import com.group.services.vk.VkApi
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -21,8 +21,8 @@ private const val URL_PATTERN = "/tasks/search/flat"
 private const val QUEUE_NAME = "search-flat"
 
 @WebServlet(name = "Search Apartment", urlPatterns = [URL_PATTERN])
-class SearchApartmentServlet : HttpServlet() {
-    private val log: Logger = Logger.getLogger(SearchApartmentServlet::class.java.name)
+class SearchFlatServlet : HttpServlet() {
+    private val log: Logger = Logger.getLogger(SearchFlatServlet::class.java.name)
     private var userId: Int = 0
     private var oneFlatFound = false
 
@@ -53,13 +53,13 @@ class SearchApartmentServlet : HttpServlet() {
         resp.status = HttpServletResponse.SC_CONTINUE
     }
 
-    private fun sendFlat(apartment: Apartment) {
+    private fun sendFlat(flat: Flat) {
         oneFlatFound = true
-        VkApi.sendApartment(userId, apartment)
+        VkApi.sendFlat(userId, flat)
     }
 }
 
-fun runSearchApartmentTask(userId: Int): String {
+fun runSearchFlatTask(userId: Int): String {
     CloudTasksClient.create().use {
         val queuePath = QueueName.of(PROJECT_ID, LOCATION, QUEUE_NAME).toString()
 
@@ -83,7 +83,7 @@ fun runSearchApartmentTask(userId: Int): String {
     }
 }
 
-fun removeSearchApartmentTask(taskId: String) {
+fun removeSearchFlatTask(taskId: String) {
     CloudTasksClient.create().use {
         try {
             it.deleteTask(taskId.trim())

@@ -2,7 +2,7 @@ package com.group.services.vk
 
 import com.group.getPhoto
 import com.group.getProperty
-import com.group.parsing.Apartment
+import com.group.parsing.Flat
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
@@ -107,16 +107,16 @@ object VkApi {
         sendMsg(peerId, "Неверная команда")
     }
 
-    fun sendApartment(peerId: Int, apartment: Apartment) {
+    fun sendFlat(peerId: Int, flat: Flat) {
         createSender()
             .peerId(peerId)
             .message(
                 """ 
-                ${apartment.name}
-                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(apartment.date.time)}
-                Цена: ${apartment.price}
-                Адрес: ${apartment.address}
-                ${apartment.url}
+                ${flat.name}
+                Выложено ${SimpleDateFormat("MM-dd HH:mm").format(flat.date.time)}
+                Цена: ${flat.price}
+                Адрес: ${flat.address}
+                ${flat.url}
             """.trimIndent()
             )
 //            .attachment(getPhotoAttachments(apartment.images))

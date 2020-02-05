@@ -19,7 +19,7 @@
 
     <servlet>
         <servlet-name>Search Apartment</servlet-name>
-        <servlet-class>com.group.servlets.SearchApartmentServlet</servlet-class>
+        <servlet-class>com.group.tasks.SearchFlatServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Search Apartment</servlet-name>

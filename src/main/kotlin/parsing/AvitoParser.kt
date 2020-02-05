@@ -12,7 +12,7 @@ import java.util.*
 
 private const val HOUR = 3_600_000
 
-data class Apartment(
+data class Flat(
     val name: String,
     val date: Calendar,
     val url: String,
@@ -27,7 +27,7 @@ object AvitoParser {
 
     fun parse(
         url: String,
-        send: (apartment: Apartment) -> Unit
+        send: (flat: Flat) -> Unit
     ) {
         Jsoup.connect(url).get().run {
             for (el in select("div.item__line")) {
@@ -35,18 +35,17 @@ object AvitoParser {
                 val dateDifference = nowDate().time - date.timeInMillis
                 val isRaised = isRaised(el)
 
-                val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm Z")
-                logger.info("Flat: ${formatter.format(date.time)} isRaised=$isRaised")
+                val formatter = SimpleDateFormat("dd-MM HH:mm")
 
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
                 if (dateDifference > HOUR && isRaised) {
-                    logger.info("Skip flat")
+                    logger.info("Skip flat: ${formatter.format(date.time)} raised")
                     continue
                 }
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
                 if (dateDifference > HOUR && !isRaised) {
-                    logger.info("Break search flat")
+                    logger.info("Skip flat: ${formatter.format(date.time)} not raised")
                     break
                 }
 
@@ -60,7 +59,7 @@ object AvitoParser {
                 val images = getImages(el)
 
                 GlobalScope.launch {
-                    send(Apartment(name, date, flatUrl, price, address, images))
+                    send(Flat(name, date, flatUrl, price, address, images))
                 }
             }
         }

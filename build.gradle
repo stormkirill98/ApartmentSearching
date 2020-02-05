@@ -48,7 +48,7 @@ dependencies {
 
     providedCompile "com.google.appengine:appengine:$appengine_version"
     compile "com.google.appengine:appengine-api-1.0-sdk:$appengine_version"
-    compile "com.google.cloud:google-cloud-servlets:$tasks_version"
+    compile "com.google.cloud:google-cloud-tasks:$tasks_version"
 
     compile "com.ibm.icu:icu4j:$icu4j_version"
     compile "org.jsoup:jsoup:$jsoup"
