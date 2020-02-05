@@ -1,18 +1,13 @@
 package com.group.parsing
 
-import com.group.nowCalendar
-import com.group.nowDate
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
-
-private const val HOUR = 3_600_000
 
 data class Flat(
     val name: String,
@@ -34,7 +29,7 @@ object AvitoParser {
             // TODO: try to run coroutines for each div with flat
             for (el in select("div.item__line")) {
                 val date = getDate(el)
-                val dateDifference = nowDate().time - date.timeInMillis
+                val dateDifference = getDifferenceFromNow(date)
                 val isRaised = isRaised(el)
 
                 val formatter = SimpleDateFormat("dd-MM HH:mm")
@@ -77,31 +72,10 @@ object AvitoParser {
     private fun getName(div: Element) = div.select("h3.snippet-title")[0].text()
 
     private fun getDate(div: Element): Calendar {
-        fun changeTime(s: String, date: Calendar) {
-            val nums = s.split(":")
-
-            date.set(Calendar.HOUR_OF_DAY, nums[0].toInt())
-            date.set(Calendar.MINUTE, nums[1].toInt())
-        }
-
         val dateDiv = div.select("div.js-item-date")
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
-        val date = nowCalendar()
 
-        when {
-            dateStr.contains("Сегодня") -> {
-                changeTime(dateStr.substringAfter(" "), date)
-            }
-
-            dateStr.contains("Вчера") -> {
-                date.add(Calendar.DAY_OF_MONTH, -1)
-                changeTime(dateStr.substringAfter(" "), date)
-            }
-
-            else -> date.clear()
-        }
-
-        return date
+        return getDate(dateStr)
     }
 
     private fun isRaised(div: Element): Boolean {

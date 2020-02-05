@@ -32,6 +32,14 @@ object UrlGenerator {
         return url.toString()
     }
 
+    fun getCianUrl(flatParameters: FlatSearchParameters): String {
+        val url = StringBuilder("https://yaroslavl.cian.ru")
+
+
+
+        return url.toString()
+    }
+
     private fun getRoomAvitoUrlPart(rooms: String): String {
         if (rooms.isEmpty()) return ""
 
