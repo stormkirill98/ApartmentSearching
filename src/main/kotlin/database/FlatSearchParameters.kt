@@ -18,7 +18,7 @@ object FlatSearchParametersTable : IntIdTable() {
     val startPrice = integer("startPrice")
     val endPrice = integer("endPrice")
     val onlyOwner = bool("onlyOwner")
-    val taskId = UserTable.varchar("task_id", TASK_ID_LENGTH).nullable()
+    val taskId = varchar("task_id", TASK_ID_LENGTH).nullable()
 }
 
 class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {

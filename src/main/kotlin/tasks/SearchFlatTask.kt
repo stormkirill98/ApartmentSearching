@@ -5,13 +5,12 @@ import com.google.cloud.tasks.v2.*
 import com.google.protobuf.Timestamp
 import com.group.UrlGenerator
 import com.group.database.User
-import com.group.parsing.Flat
 import com.group.parsing.AvitoParser
+import com.group.parsing.Flat
 import com.group.services.vk.VkApi
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Clock
 import java.time.Instant
-import java.util.logging.Logger
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -35,10 +34,12 @@ class SearchFlatServlet : HttpServlet() {
         userId = userIdStr.toInt()
 
         val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
-        if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
-            removeTask(req)
-            emptyTaskId(userId)
-            return
+        prevCode?.let {
+            if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
+                removeTask(req)
+                emptyTaskId(userId)
+                return
+            }
         }
 
         transaction {
