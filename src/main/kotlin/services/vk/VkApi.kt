@@ -116,24 +116,19 @@ object VkApi {
 
         logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
 
-
-        runBlocking {
-            logger.info("runBlocking sendFlat: thread ${Thread.currentThread().name}")
-
-            createSender()
-                .peerId(peerId)
-                .message(
-                    """ 
+        createSender()
+            .peerId(peerId)
+            .message(
+            """ 
                 ${flat.name}
                 Выложено ${dateFormat.format(flat.date.time)}
                 Цена: ${flat.price}
                 Адрес: ${flat.address}
                 ${flat.url}
             """.trimIndent()
-                )
-                .attachment(getPhotoAttachments(flat.images))
-                .execute()
-        }
+            )
+            .attachment(getPhotoAttachments(flat.images))
+            .execute()
     }
 
     fun notFoundFlats(peerId: Int) {
@@ -154,36 +149,31 @@ object VkApi {
 
     private fun createSender() = vkApi.messages().send(actor).randomId(Random.nextInt())
 
-    private suspend fun getPhotoAttachments(imageUrls: List<String>): String {
-        val imageThreads = arrayListOf<Deferred<Photo>>()
+    private fun getPhotoAttachments(imageUrls: List<String>): String {
+        val attachments = StringBuilder()
+
         for (imageUrl in imageUrls) {
             if (imageUrl.isBlank())
                 continue
 
-            val photoThread = GlobalScope.async {
-                logger.info("async savePhoto: thread ${Thread.currentThread().name}")
-                savePhoto(imageUrl)
-            }
-            imageThreads.add(photoThread)
+            val photo = savePhoto(imageUrl)
+            attachments.append(attachmentFromPhoto(photo)).append(",")
         }
-
-        val attachments = StringBuilder()
-        imageThreads.forEach { attachments.append(attachmentFromPhoto(it.await())).append(",") }
 
         return attachments.toString()
     }
 
     private fun attachmentFromPhoto(photo: Photo) = "photo${photo.ownerId}_${photo.id}"
 
-    private suspend fun savePhoto(url: String): Photo {
-        val fileThread = GlobalScope.async { getPhoto(url) }
+    private fun savePhoto(url: String): Photo {
+        val photo = getPhoto(url)
 
         val uploadServer = vkApi.photos()
             .getMessagesUploadServer(actor)
             .execute()
 
         val uploadResponse = vkApi.upload()
-            .photoMessage(uploadServer.uploadUrl.toString(), fileThread.await())
+            .photoMessage(uploadServer.uploadUrl.toString(), photo)
             .execute()
 
         val photos = vkApi.photos()

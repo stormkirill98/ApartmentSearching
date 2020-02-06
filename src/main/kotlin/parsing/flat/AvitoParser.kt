@@ -41,26 +41,22 @@ object AvitoParser {
 
                 val header = el.select("div.item_table-header")[0]
 
-                val nameThread = GlobalScope.async { getName(header) }
-                val flatUrlThread = GlobalScope.async { getUrl(header) }
-                val priceThread = GlobalScope.async { getPrice(header) }
-                val addressThread = GlobalScope.async { getAddress(el) }
-                val imagesThread = GlobalScope.async { getImages(el) }
+                val nameThread = getName(header)
+                val flatUrlThread = getUrl(header)
+                val priceThread = getPrice(header)
+                val addressThread = getAddress(el)
+                val imagesThread = getImages(el)
 
-                GlobalScope.launch {
-                    logger.info("GlobalScope.launch avito parser: thread ${Thread.currentThread().name}")
-
-                    send(
-                        Flat(
-                            nameThread.await(),
-                            date,
-                            flatUrlThread.await(),
-                            priceThread.await(),
-                            addressThread.await(),
-                            imagesThread.await()
-                        )
+                send(
+                    Flat(
+                        nameThread,
+                        date,
+                        flatUrlThread,
+                        priceThread,
+                        addressThread,
+                        imagesThread
                     )
-                }
+                )
             }
         }
     }

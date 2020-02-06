@@ -2,7 +2,6 @@ package com.group.parsing.flat
 
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
-import com.group.tasks.SearchFlatServlet
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object CianParser {
-    private val logger = LoggerFactory.getLogger(SearchFlatServlet::class.java.name)
+    private val logger = LoggerFactory.getLogger(CianParser::class.java.name)
 
     fun parse(
         url: String,
@@ -32,26 +31,22 @@ object CianParser {
                     break
                 }
 
-                val flatUrlThread = GlobalScope.async { getUrl(infoDiv) }
-                val nameThread = GlobalScope.async { getName(infoDiv) }
-                val priceThread = GlobalScope.async { getPrice(infoDiv) }
-                val addressThread = GlobalScope.async { getAddress(infoDiv) }
-                val imageUrlsThread = GlobalScope.async { getImageUrls(imagesDiv) }
+                val flatUrlThread = getUrl(infoDiv)
+                val nameThread =  getName(infoDiv)
+                val priceThread = getPrice(infoDiv)
+                val addressThread = getAddress(infoDiv)
+                val imageUrlsThread = getImageUrls(imagesDiv)
 
-                GlobalScope.launch {
-                    logger.info("GlobalScope.launch cian parser: thread ${Thread.currentThread().name}")
-
-                    send(
-                        Flat(
-                            nameThread.await(),
-                            date,
-                            flatUrlThread.await(),
-                            priceThread.await(),
-                            addressThread.await(),
-                            imageUrlsThread.await()
-                        )
+                send(
+                    Flat(
+                        nameThread,
+                        date,
+                        flatUrlThread,
+                        priceThread,
+                        addressThread,
+                        imageUrlsThread
                     )
-                }
+                )
             }
         }
     }

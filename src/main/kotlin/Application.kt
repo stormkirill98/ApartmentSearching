@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
 import parsing.flat.Flat
+import java.util.*
 
 
 fun Application.module() {
@@ -58,27 +59,17 @@ fun Application.module() {
                 VkApi.sendFlat(139035212, flat)
             }
 
-            println("get /parse: thread ${Thread.currentThread().name}")
             transaction {
                 val flatParameters = User.get(139035212).searchParameters.flatParameters
 
-                runBlocking {
-                    println("runBlocking: thread ${Thread.currentThread().name}")
+                val startTime = Date().time
+                val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+                AvitoParser.parse(avitoUrl, ::sendFlat)
 
-                    launch {
-                        println("launch to parse avito: thread ${Thread.currentThread().name}")
+                val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+                CianParser.parse(cianUrl, ::sendFlat)
 
-                        val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
-                        AvitoParser.parse(avitoUrl, ::sendFlat)
-                    }
-
-                    launch {
-                        println("launch to parse cian: thread ${Thread.currentThread().name}")
-
-                        val cianUrl = UrlGenerator.getCianUrl(flatParameters)
-                        CianParser.parse(cianUrl, ::sendFlat)
-                    }
-                }
+                println("   Complete by ${Date().time - startTime} ms")
             }
         }
     }

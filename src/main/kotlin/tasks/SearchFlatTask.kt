@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory
 import parsing.flat.Flat
 import java.time.Clock
 import java.time.Instant
+import java.util.*
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -50,23 +51,13 @@ class SearchFlatServlet : HttpServlet() {
         transaction {
             val flatParameters = User.get(userId).searchParameters.flatParameters
 
-            runBlocking {
-                logger.info("runBlocking: thread ${Thread.currentThread().name}")
+            val startTime = Date().time
+            val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+            AvitoParser.parse(avitoUrl, ::sendFlat)
 
-                launch {
-                    logger.info("launch to parse avito: thread ${Thread.currentThread().name}")
-
-                    val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
-                    AvitoParser.parse(avitoUrl, ::sendFlat)
-                }
-
-                launch {
-                    logger.info("launch to parse cian: thread ${Thread.currentThread().name}")
-
-                    val cianUrl = UrlGenerator.getCianUrl(flatParameters)
-                    CianParser.parse(cianUrl, ::sendFlat)
-                }
-            }
+            val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+            CianParser.parse(cianUrl, ::sendFlat)
+            logger.info("   Complete by ${Date().time - startTime} ms")
         }
 
         if (!oneFlatFound) VkApi.notFoundFlats(userId)
