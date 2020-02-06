@@ -1,23 +1,16 @@
-package com.group.parsing
+package com.group.parsing.flat
 
+import com.group.parsing.HOUR
+import com.group.parsing.getDifferenceFromNow
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
+import parsing.flat.Flat
 import java.text.SimpleDateFormat
 import java.util.*
-
-// TODO: move class Flat
-data class Flat(
-    val name: String,
-    val date: Calendar,
-    val url: String,
-    val price: String,
-    val address: String,
-    val images: List<String>
-)
 
 object AvitoParser {
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
@@ -55,6 +48,8 @@ object AvitoParser {
                 val imagesThread = GlobalScope.async { getImages(el) }
 
                 GlobalScope.launch {
+                    logger.info("GlobalScope.launch avito parser: thread ${Thread.currentThread().name}")
+
                     send(
                         Flat(
                             nameThread.await(),
@@ -76,7 +71,7 @@ object AvitoParser {
         val dateDiv = div.select("div.js-item-date")
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
 
-        return getDate(dateStr)
+        return com.group.parsing.getDate(dateStr)
     }
 
     private fun isRaised(div: Element): Boolean {

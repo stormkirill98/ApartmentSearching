@@ -1,9 +1,8 @@
 package com.group
 
 import com.group.database.User
-import com.group.parsing.AvitoParser
-import com.group.parsing.CianParser
-import com.group.parsing.Flat
+import com.group.parsing.flat.AvitoParser
+import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkApi
 import com.group.services.vk.VkClient
 import io.ktor.application.Application
@@ -20,7 +19,10 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
+import parsing.flat.Flat
 
 
 fun Application.module() {
@@ -55,16 +57,28 @@ fun Application.module() {
             fun sendFlat(flat: Flat) {
                 VkApi.sendFlat(139035212, flat)
             }
+
+            println("get /parse: thread ${Thread.currentThread().name}")
             transaction {
-                val user = User.get(139035212)
+                val flatParameters = User.get(139035212).searchParameters.flatParameters
 
-//                val avitoUrl = UrlGenerator.getAvitoUrl(user.searchParameters.flatParameters)
-//                AvitoParser.parse(avitoUrl, ::sendFlat)
+                runBlocking {
+                    println("runBlocking: thread ${Thread.currentThread().name}")
 
-                val cianUrl = UrlGenerator.getCianUrl(user.searchParameters.flatParameters)
-                println(cianUrl)
+                    launch {
+                        println("launch to parse avito: thread ${Thread.currentThread().name}")
 
-                CianParser.parse(cianUrl, ::sendFlat)
+                        val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+                        AvitoParser.parse(avitoUrl, ::sendFlat)
+                    }
+
+                    launch {
+                        println("launch to parse cian: thread ${Thread.currentThread().name}")
+
+                        val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+                        CianParser.parse(cianUrl, ::sendFlat)
+                    }
+                }
             }
         }
     }

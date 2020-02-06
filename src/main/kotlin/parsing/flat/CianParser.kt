@@ -1,14 +1,21 @@
-package com.group.parsing
+package com.group.parsing.flat
 
-import com.group.services.vk.VkApi
+import com.group.parsing.HOUR
+import com.group.parsing.getDifferenceFromNow
+import com.group.tasks.SearchFlatServlet
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import org.slf4j.LoggerFactory
+import parsing.flat.Flat
+import java.text.SimpleDateFormat
 import java.util.*
 
 object CianParser {
+    private val logger = LoggerFactory.getLogger(SearchFlatServlet::class.java.name)
+
     fun parse(
         url: String,
         send: (flat: Flat) -> Unit
@@ -18,7 +25,13 @@ object CianParser {
                 val imagesDiv = el.select("div.c6e8ba5398--media--HK4H1").last() ?: continue
                 val infoDiv = el.select("div.c6e8ba5398--main--1NDwp").last() ?: continue
 
-                val dateThread = GlobalScope.async { getDate(infoDiv) }
+                val date = getDate(el)
+
+                if (getDifferenceFromNow(date) > HOUR) {
+                    logger.info("Break on flat: ${SimpleDateFormat("dd-MM HH:mm").format(date.time)}")
+                    break
+                }
+
                 val flatUrlThread = GlobalScope.async { getUrl(infoDiv) }
                 val nameThread = GlobalScope.async { getName(infoDiv) }
                 val priceThread = GlobalScope.async { getPrice(infoDiv) }
@@ -26,10 +39,12 @@ object CianParser {
                 val imageUrlsThread = GlobalScope.async { getImageUrls(imagesDiv) }
 
                 GlobalScope.launch {
+                    logger.info("GlobalScope.launch cian parser: thread ${Thread.currentThread().name}")
+
                     send(
                         Flat(
                             nameThread.await(),
-                            dateThread.await(),
+                            date,
                             flatUrlThread.await(),
                             priceThread.await(),
                             addressThread.await(),
@@ -47,7 +62,7 @@ object CianParser {
 
     private fun getDate(infoDiv: Element): Calendar {
         val dateStr = infoDiv.select("div.c6e8ba5398--absolute--9uFLj").last().text()
-        return getDate(dateStr)
+        return com.group.parsing.getDate(dateStr)
     }
 
     private fun getName(infoDiv: Element): String {

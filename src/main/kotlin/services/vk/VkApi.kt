@@ -2,7 +2,6 @@ package com.group.services.vk
 
 import com.group.getPhoto
 import com.group.getProperty
-import com.group.parsing.Flat
 import com.group.services.vk.enums.Keyboards
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
@@ -13,6 +12,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import parsing.flat.Flat
 import java.text.SimpleDateFormat
 import kotlin.random.Random
 
@@ -116,20 +116,22 @@ object VkApi {
 
         logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
 
+
         runBlocking {
+            logger.info("runBlocking sendFlat: thread ${Thread.currentThread().name}")
+
             createSender()
                 .peerId(peerId)
                 .message(
-                """ 
-                    ${flat.name}
-                    Выложено ${dateFormat.format(flat.date.time)}
-                    Цена: ${flat.price}
-                    Адрес: ${flat.address}
-                    ${flat.url}
-                """.trimIndent()
+                    """ 
+                ${flat.name}
+                Выложено ${dateFormat.format(flat.date.time)}
+                Цена: ${flat.price}
+                Адрес: ${flat.address}
+                ${flat.url}
+            """.trimIndent()
                 )
                 .attachment(getPhotoAttachments(flat.images))
-                .dontParseLinks(true)
                 .execute()
         }
     }
@@ -158,7 +160,10 @@ object VkApi {
             if (imageUrl.isBlank())
                 continue
 
-            val photoThread = GlobalScope.async { savePhoto(imageUrl) }
+            val photoThread = GlobalScope.async {
+                logger.info("async savePhoto: thread ${Thread.currentThread().name}")
+                savePhoto(imageUrl)
+            }
             imageThreads.add(photoThread)
         }
 

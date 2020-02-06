@@ -5,10 +5,14 @@ import com.google.cloud.tasks.v2.*
 import com.google.protobuf.Timestamp
 import com.group.UrlGenerator
 import com.group.database.User
-import com.group.parsing.AvitoParser
-import com.group.parsing.Flat
+import com.group.parsing.flat.AvitoParser
+import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
+import parsing.flat.Flat
 import java.time.Clock
 import java.time.Instant
 import javax.servlet.annotation.WebServlet
@@ -23,6 +27,7 @@ private const val QUEUE_NAME = "search-flat"
 class SearchFlatServlet : HttpServlet() {
     private var userId: Int = 0
     private var oneFlatFound = false
+    private val logger = LoggerFactory.getLogger(SearchFlatServlet::class.java.name)
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         val userIdStr = req.getParameter("userId")
@@ -43,10 +48,25 @@ class SearchFlatServlet : HttpServlet() {
         }
 
         transaction {
-            val user = User.get(userId)
+            val flatParameters = User.get(userId).searchParameters.flatParameters
 
-            val url = UrlGenerator.getAvitoUrl(user.searchParameters.flatParameters)
-            AvitoParser.parse(url, ::sendFlat)
+            runBlocking {
+                logger.info("runBlocking: thread ${Thread.currentThread().name}")
+
+                launch {
+                    logger.info("launch to parse avito: thread ${Thread.currentThread().name}")
+
+                    val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+                    AvitoParser.parse(avitoUrl, ::sendFlat)
+                }
+
+                launch {
+                    logger.info("launch to parse cian: thread ${Thread.currentThread().name}")
+
+                    val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+                    CianParser.parse(cianUrl, ::sendFlat)
+                }
+            }
         }
 
         if (!oneFlatFound) VkApi.notFoundFlats(userId)
