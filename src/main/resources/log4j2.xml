@@ -2,7 +2,6 @@
 <Configuration status="info">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-<!--            TODO: filter logs-->
 <!--            <MarkerFilter marker="my-log" onMatch="ACCEPT" onMismatch="DENY"/>-->
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>
         </Console>
@@ -13,5 +12,6 @@
             <AppenderRef ref="Console"/>
         </Root>
         <logger name="Exposed" level="debug"> <appender-ref ref="STDOUT"/> </logger>
+        <logger name="com.vk.api" level="OFF" />
     </Loggers>
 </Configuration>
