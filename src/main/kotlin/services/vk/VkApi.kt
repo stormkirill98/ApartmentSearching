@@ -176,6 +176,8 @@ object VkApi {
             .photoMessage(uploadServer.uploadUrl.toString(), photo)
             .execute()
 
+        photo.delete()
+
         val photos = vkApi.photos()
             .saveMessagesPhoto(actor, uploadResponse.photo)
             .server(uploadResponse.server)
