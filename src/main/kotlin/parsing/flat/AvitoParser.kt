@@ -2,9 +2,6 @@ package com.group.parsing.flat
 
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -19,8 +16,9 @@ object AvitoParser {
         url: String,
         send: (flat: Flat) -> Unit
     ) {
+        logger.info("Start parse avito")
+
         Jsoup.connect(url).get().run {
-            // TODO: try to run coroutines for each div with flat
             for (el in select("div.item__line")) {
                 val date = getDate(el)
                 val dateDifference = getDifferenceFromNow(date)
@@ -59,6 +57,8 @@ object AvitoParser {
                 )
             }
         }
+
+        logger.info("End parse avito")
     }
 
     private fun getName(div: Element) = div.select("h3.snippet-title")[0].text()

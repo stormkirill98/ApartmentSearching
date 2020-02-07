@@ -2,9 +2,6 @@ package com.group.parsing.flat
 
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -19,6 +16,8 @@ object CianParser {
         url: String,
         send: (flat: Flat) -> Unit
     ) {
+        logger.info("Start parse cian")
+
         Jsoup.connect(url).get().run {
             for (el in select("div.c6e8ba5398--main-container--1FMpY")) {
                 val imagesDiv = el.select("div.c6e8ba5398--media--HK4H1").last() ?: continue
@@ -32,7 +31,7 @@ object CianParser {
                 }
 
                 val flatUrlThread = getUrl(infoDiv)
-                val nameThread =  getName(infoDiv)
+                val nameThread = getName(infoDiv)
                 val priceThread = getPrice(infoDiv)
                 val addressThread = getAddress(infoDiv)
                 val imageUrlsThread = getImageUrls(imagesDiv)
@@ -49,6 +48,8 @@ object CianParser {
                 )
             }
         }
+
+        logger.info("End parse cian")
     }
 
     private fun getUrl(infoDiv: Element): String {

@@ -8,8 +8,6 @@ import com.group.database.User
 import com.group.parsing.flat.AvitoParser
 import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import parsing.flat.Flat
@@ -52,12 +50,14 @@ class SearchFlatServlet : HttpServlet() {
             val flatParameters = User.get(userId).searchParameters.flatParameters
 
             val startTime = Date().time
-            val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
-            AvitoParser.parse(avitoUrl, ::sendFlat)
 
+            val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
             val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+
+            AvitoParser.parse(avitoUrl, ::sendFlat)
             CianParser.parse(cianUrl, ::sendFlat)
-            logger.info("   Complete by ${Date().time - startTime} ms")
+
+            logger.info("Complete by ${Date().time - startTime} ms")
         }
 
         if (!oneFlatFound) VkApi.notFoundFlats(userId)
