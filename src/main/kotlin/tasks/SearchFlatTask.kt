@@ -8,6 +8,7 @@ import com.group.database.User
 import com.group.parsing.flat.AvitoParser
 import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkMsgApi
+import com.group.services.vk.enums.LogicState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -43,7 +44,7 @@ class SearchFlatServlet : HttpServlet() {
         prevCode?.let {
             if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
                 removeTask(req)
-                emptyTaskId(userId)
+                resetUserToWaitState(userId)
                 return
             }
         }
@@ -85,11 +86,13 @@ class SearchFlatServlet : HttpServlet() {
         removeSearchFlatTask("projects/$PROJECT_ID/locations/$LOCATION/queues/my-queue-id/tasks/$taskName")
     }
 
-    private fun emptyTaskId(userId: Int) {
+    private fun resetUserToWaitState(userId: Int) {
         transaction {
             val user = User.get(userId)
+            user.state = LogicState.WAIT
             user.searchParameters.flatParameters.taskId = null
         }
+        VkMsgApi.waitMsg(userId)
     }
 }
 

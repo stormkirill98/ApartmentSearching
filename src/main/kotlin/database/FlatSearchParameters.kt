@@ -101,7 +101,7 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
         return """
             Проверьте параметры поиска, которые вы задали:
             
-            1. $city
+            1. $city 
             
             2. Районы: ${ if (districts.isEmpty()) "любой" else districts.dropLast(1) }
             
