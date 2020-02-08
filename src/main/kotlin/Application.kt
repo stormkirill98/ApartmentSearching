@@ -5,6 +5,7 @@ import com.group.parsing.flat.AvitoParser
 import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkApi
 import com.group.services.vk.VkClient
+import com.group.services.vk.VkMsgApi
 import com.group.tasks.SearchFlatServlet
 import com.group.tasks.runSearchFlatTask
 import io.ktor.application.Application
@@ -62,7 +63,7 @@ fun Application.module() {
 
         get("/parse") {
             fun sendFlat(flat: Flat) {
-                VkApi.sendFlat(139035212, flat)
+                VkMsgApi.sendFlat(139035212, flat)
             }
 
             transaction {

@@ -8,6 +8,9 @@ import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
 import com.vk.api.sdk.objects.photos.Photo
 import com.vk.api.sdk.queries.messages.MessagesSendQuery
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import parsing.flat.Flat
 import java.text.SimpleDateFormat
@@ -124,8 +127,6 @@ object VkApi {
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
 
-
-
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
 
@@ -141,14 +142,23 @@ object VkApi {
     fun createSender(): MessagesSendQuery = vkApi.messages().send(actor).randomId(Random.nextInt())
 
     fun getPhotoAttachments(imageUrls: List<String>): String {
+        val imageThreads = arrayListOf<Deferred<Photo>>()
         val attachments = StringBuilder()
 
-        for (imageUrl in imageUrls) {
-            if (imageUrl.isBlank())
-                continue
+        runBlocking {
+            logger.info("[${Thread.currentThread().name}] runBlocking for getPhotoAttachments")
+            for (imageUrl in imageUrls) {
+                if (imageUrl.isBlank())
+                    continue
 
-            val photo = savePhoto(imageUrl)
-            attachments.append(attachmentFromPhoto(photo)).append(",")
+                val photoThread = async {
+                    logger.info("[${Thread.currentThread().name}] async savePhoto")
+                    savePhoto(imageUrl)
+                }
+                imageThreads.add(photoThread)
+            }
+
+            imageThreads.forEach { attachments.append(attachmentFromPhoto(it.await())).append(",") }
         }
 
         return attachments.toString()
