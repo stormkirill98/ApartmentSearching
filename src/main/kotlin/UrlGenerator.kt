@@ -73,24 +73,31 @@ object UrlGenerator {
     private fun getDistrictCianUrlPath(districts: String): String {
         if (districts.isEmpty()) return ""
         val districtPathUrl = java.lang.StringBuilder("")
+        var districtNumber = 0
 
+        // Дзержинский
         if (districts.contains("172"))
-            districtPathUrl.append("&district%5B0%5D=319")
+            districtPathUrl.append("&district%5B${districtNumber++}%5D=319")
 
-        if (districts.contains("174"))
-            districtPathUrl.append("&district%5B0%5D=321")
-
-        if (districts.contains("176"))
-            districtPathUrl.append("&district%5B0%5D=323")
-
-        if (districts.contains("177"))
-            districtPathUrl.append("&district%5B0%5D=324")
-
+        // Заволжский
         if (districts.contains("173"))
-            districtPathUrl.append("&district%5B0%5D=320")
+            districtPathUrl.append("&district%5B${districtNumber++}%5D=320")
 
+        // Кировский
+        if (districts.contains("174"))
+            districtPathUrl.append("&district%5B${districtNumber++}%5D=321")
+
+        // Красноперекопский
         if (districts.contains("175"))
-            districtPathUrl.append("&district%5B0%5D=322")
+            districtPathUrl.append("&district%5B${districtNumber++}%5D=322")
+
+        // Ленинский
+        if (districts.contains("176"))
+            districtPathUrl.append("&district%5B${districtNumber++}%5D=323")
+
+        // Фрунзенский
+        if (districts.contains("177"))
+            districtPathUrl.append("&district%5B${districtNumber}%5D=324")
 
         return districtPathUrl.toString()
     }
