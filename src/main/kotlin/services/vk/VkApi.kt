@@ -7,35 +7,17 @@ import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.httpclient.HttpTransportClient
 import com.vk.api.sdk.objects.photos.Photo
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import com.vk.api.sdk.queries.messages.MessagesSendQuery
 import org.slf4j.LoggerFactory
 import parsing.flat.Flat
 import java.text.SimpleDateFormat
 import kotlin.random.Random
 
-object VkApi {
-    private val accessKey = getProperty("vk-access-key")
-    private val groupId = getProperty("vk-group-id").toInt()
-
+object VkMsgApi {
     private val logger = LoggerFactory.getLogger(VkApi::class.java)
 
-    private val vkApi = VkApiClient(HttpTransportClient.getInstance())
-    private val actor = GroupActor(groupId, accessKey)
-
-    fun getUserName(id: Int): String {
-        val result = vkApi.users()
-            .get(actor)
-            .userIds(id.toString())
-            .execute()
-
-        return result[0].firstName
-    }
-
     fun startMsg(peerId: Int) {
-        sendMsg(
+        VkApi.sendMsg(
             peerId,
             "Привет! " +
                     "Я помогу тебе снять квартиру. " +
@@ -46,69 +28,62 @@ object VkApi {
     }
 
     fun continueMsg(peerId: Int) {
-        sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
+        VkApi.sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
     }
 
     fun districtsMsg(peerId: Int) {
-        sendMsg(peerId, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
+        VkApi.sendMsg(peerId, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
     }
 
     fun roomsMsg(peerId: Int) {
-        sendMsg(peerId, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
+        VkApi.sendMsg(peerId, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
     }
 
-    fun selectedDistrictsMsg(peerId: Int, districts: String) {
-        //TODO: print id's, but need names
-        val msg = if (districts.isEmpty())
-            "Нет выбранных районов. Квартиры будут искаться по всему городу"
-        else "Выбранные районы: $districts"
-        sendMsg(peerId, msg)
+    fun notSelectDistrictsMsg(peerId: Int) {
+        VkApi.sendMsg(peerId, "Нет выбранных районов. Квартиры будут искаться по всему городу")
     }
 
-    fun selectedRoomsMsg(peerId: Int, rooms: String) {
-        val msg = if (rooms.isEmpty())
-            "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат"
-        else "Выбранное кол-во комнат: $rooms"
-        sendMsg(peerId, msg)
+    fun notSelectRoomsMsg(peerId: Int) {
+        VkApi.sendMsg(peerId, "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат")
     }
 
     fun priceMsg(peerId: Int) {
-        sendMsg(
+        VkApi.sendMsg(
             peerId,
-            "Введите диапазон цен в формате: от XXXX до XXXX(также возможны варианты: от XXXX, до XXXX)",
+            "Введите диапазон цен в формате: от XXX до XXX(также возможны варианты: от XXX, до XXX)",
             Keyboards.PRICE
         )
     }
 
     fun landlordMsg(peerId: Int) {
-        sendMsg(peerId, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
+        VkApi.sendMsg(peerId, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
     }
 
     fun confirmMsg(peerId: Int, text: String) {
-        sendMsg(peerId, text, Keyboards.CONFIRM)
+        VkApi.sendMsg(peerId, text, Keyboards.CONFIRM)
     }
 
     fun searchMsg(peerId: Int) {
-        sendMsg(peerId, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
+        VkApi.sendMsg(peerId, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
     }
 
     fun waitMsg(peerId: Int) {
-        sendMsg(peerId, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
+        VkApi.sendMsg(peerId, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
     }
 
     fun groupLeaveMsg(peerId: Int) {
-        sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
+        VkApi.sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
     }
 
     fun wrongPriceMsg(peerId: Int) {
-        sendMsg(
+        VkApi.sendMsg(
             peerId,
             "Введенный диапазон цен не соответствует формату.\nПример: от 5000 до 10000"
         )
     }
 
     fun wrongCommandMsg(peerId: Int) {
-        sendMsg(peerId, "Неверная команда")
+        VkApi.sendMsg(peerId, "Неверная команда")
     }
 
     fun sendFlat(peerId: Int, flat: Flat) {
@@ -116,10 +91,10 @@ object VkApi {
 
         logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
 
-        createSender()
+        VkApi.createSender()
             .peerId(peerId)
             .message(
-            """ 
+                """ 
                 ${flat.name}
                 Выложено ${dateFormat.format(flat.date.time)}
                 Цена: ${flat.price}
@@ -127,13 +102,29 @@ object VkApi {
                 ${flat.url}
             """.trimIndent()
             )
-            .attachment(getPhotoAttachments(flat.images))
+            .attachment(VkApi.getPhotoAttachments(flat.images))
             .execute()
     }
 
     fun notFoundFlats(peerId: Int) {
-        sendMsg(peerId, "За последний час не было выложено новых квартир")
+        VkApi.sendMsg(peerId, "За последний час не было выложено новых квартир")
     }
+
+    fun groupJoinMsg(peerId: Int) {
+        VkApi.sendMsg(peerId,"Подпишитесь на группу, чтобы бот смог вам помочь")
+    }
+}
+
+object VkApi {
+    private val accessKey = getProperty("vk-access-key")
+    private val groupId = getProperty("vk-group-id").toInt()
+
+    private val logger = LoggerFactory.getLogger(VkApi::class.java)
+
+    private val vkApi = VkApiClient(HttpTransportClient.getInstance())
+    private val actor = GroupActor(groupId, accessKey)
+
+
 
     fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
         logger.info("Send msg to $peerId with text='$msg'")
@@ -147,9 +138,9 @@ object VkApi {
         sender.execute()
     }
 
-    private fun createSender() = vkApi.messages().send(actor).randomId(Random.nextInt())
+    fun createSender(): MessagesSendQuery = vkApi.messages().send(actor).randomId(Random.nextInt())
 
-    private fun getPhotoAttachments(imageUrls: List<String>): String {
+    fun getPhotoAttachments(imageUrls: List<String>): String {
         val attachments = StringBuilder()
 
         for (imageUrl in imageUrls) {

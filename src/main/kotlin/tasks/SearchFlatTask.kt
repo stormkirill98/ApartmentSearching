@@ -7,7 +7,7 @@ import com.group.UrlGenerator
 import com.group.database.User
 import com.group.parsing.flat.AvitoParser
 import com.group.parsing.flat.CianParser
-import com.group.services.vk.VkApi
+import com.group.services.vk.VkMsgApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -71,13 +71,13 @@ class SearchFlatServlet : HttpServlet() {
             logger.info("Complete by ${Date().time - startTime} ms")
         }
 
-        if (!oneFlatFound) VkApi.notFoundFlats(userId)
+        if (!oneFlatFound) VkMsgApi.notFoundFlats(userId)
         resp.status = HttpServletResponse.SC_CONTINUE
     }
 
     private fun sendFlat(flat: Flat) {
         oneFlatFound = true
-        VkApi.sendFlat(userId, flat)
+        VkMsgApi.sendFlat(userId, flat)
     }
 
     private fun removeTask(req: HttpServletRequest) {

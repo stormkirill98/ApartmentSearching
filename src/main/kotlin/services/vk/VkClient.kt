@@ -38,7 +38,7 @@ object VkClient : CallbackApi() {
         msg?.let {
             transaction {
                 if (!User.exists(msg.fromId)) {
-                    VkApi.sendMsg(msg.fromId, "Подпишитесь на группу, чтобы бот смог вам помочь")
+                    VkMsgApi.groupJoinMsg(msg.fromId)
                     return@transaction
                 }
 
@@ -49,14 +49,14 @@ object VkClient : CallbackApi() {
                 when (user.state) {
                     LogicState.NOT_START -> {
                         if (payload == null) {
-                            VkApi.startMsg(msg.fromId)
+                            VkMsgApi.startMsg(msg.fromId)
                         } else {
                             val command = parseCommand(payload)
 
                             if (command == Command.START) {
-                                VkApi.districtsMsg(msg.fromId)
+                                VkMsgApi.districtsMsg(msg.fromId)
                                 user.state = LogicState.DISTRICTS
-                            } else VkApi.startMsg(msg.fromId)
+                            } else VkMsgApi.startMsg(msg.fromId)
                         }
                     }
 
@@ -64,7 +64,7 @@ object VkClient : CallbackApi() {
 
                     LogicState.DISTRICTS -> {
                         if (payload == null) {
-                            VkApi.wrongCommandMsg(msg.fromId)
+                            VkMsgApi.wrongCommandMsg(msg.fromId)
                             return@transaction
                         }
 
@@ -74,23 +74,23 @@ object VkClient : CallbackApi() {
                         } else {
                             when (parseCommand(payload)) {
                                 Command.NEXT -> {
-                                    VkApi.roomsMsg(msg.fromId)
+                                    VkMsgApi.roomsMsg(msg.fromId)
                                     user.state = LogicState.COUNT_ROOM
                                 }
 
                                 Command.CLEAR -> {
                                     flatParameters.clearDistricts()
-                                    VkApi.selectedDistrictsMsg(msg.fromId, flatParameters.districts)
+                                    VkMsgApi.notSelectDistrictsMsg(msg.fromId)
                                 }
 
                                 Command.ALL -> {
                                     flatParameters.setAllDistricts()
 
-                                    VkApi.roomsMsg(msg.fromId)
+                                    VkMsgApi.roomsMsg(msg.fromId)
                                     user.state = LogicState.COUNT_ROOM
                                 }
 
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
@@ -99,42 +99,38 @@ object VkClient : CallbackApi() {
                         when (parseCountRoomCommand(payload)) {
                             CountRoomCommand.ROOM_1 -> {
                                 flatParameters.addCountRoom("1")
-                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_2 -> {
                                 flatParameters.addCountRoom("2")
-                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_3 -> {
                                 flatParameters.addCountRoom("3")
-                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.ROOM_MORE_3 -> {
                                 flatParameters.addCountRoom("3+")
-                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
                             }
 
                             CountRoomCommand.NEXT -> {
-                                VkApi.priceMsg(msg.fromId)
+                                VkMsgApi.priceMsg(msg.fromId)
                                 user.state = LogicState.PRICE
                             }
 
                             CountRoomCommand.CLEAR -> {
                                 flatParameters.clearRooms()
-                                VkApi.selectedRoomsMsg(msg.fromId, flatParameters.rooms)
+                                VkMsgApi.notSelectRoomsMsg(msg.fromId)
                             }
 
                             CountRoomCommand.ALL -> {
                                 flatParameters.setAllRooms()
 
-                                VkApi.priceMsg(msg.fromId)
+                                VkMsgApi.priceMsg(msg.fromId)
                                 user.state = LogicState.PRICE
                             }
 
-                            else -> VkApi.wrongCommandMsg(msg.fromId)
+                            else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                         }
                     }
 
@@ -146,112 +142,112 @@ object VkClient : CallbackApi() {
                                 .toLowerCase()
 
                             if (!isPriceMsg(text)) {
-                                VkApi.wrongPriceMsg(msg.fromId)
+                                VkMsgApi.wrongPriceMsg(msg.fromId)
                                 return@transaction
                             }
 
                             flatParameters.setPriceInterval(parsePrice(text))
                             user.state = LogicState.LANDLORD
-                            VkApi.landlordMsg(msg.fromId)
+                            VkMsgApi.landlordMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.ALL -> {
                                     flatParameters.setAnyPrice()
                                     user.state = LogicState.LANDLORD
-                                    VkApi.landlordMsg(msg.fromId)
+                                    VkMsgApi.landlordMsg(msg.fromId)
                                 }
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
 
                     LogicState.LANDLORD -> {
                         if (payload == null) {
-                            VkApi.wrongCommandMsg(msg.fromId)
+                            VkMsgApi.wrongCommandMsg(msg.fromId)
                         } else {
                             when (parseLandlordCommand(payload)) {
                                 LandlordCommand.ALL -> {
                                     flatParameters.onlyOwner = false
                                     user.state = LogicState.CONFIRM
-                                    VkApi.confirmMsg(msg.fromId, flatParameters.getMsg())
+                                    VkMsgApi.confirmMsg(msg.fromId, flatParameters.getMsg())
                                 }
 
                                 LandlordCommand.ONLY_OWNER -> {
                                     flatParameters.onlyOwner = true
                                     user.state = LogicState.CONFIRM
-                                    VkApi.confirmMsg(msg.fromId, flatParameters.getMsg())
+                                    VkMsgApi.confirmMsg(msg.fromId, flatParameters.getMsg())
                                 }
 
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
 
                     LogicState.CONFIRM -> {
                         if (payload == null) {
-                            VkApi.wrongCommandMsg(msg.fromId)
+                            VkMsgApi.wrongCommandMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     user.state = LogicState.DISTRICTS
-                                    VkApi.districtsMsg(msg.fromId)
+                                    VkMsgApi.districtsMsg(msg.fromId)
                                 }
 
                                 Command.START -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
-                                    VkApi.searchMsg(msg.fromId)
+                                    VkMsgApi.searchMsg(msg.fromId)
                                     runSearch(user)
                                 }
 
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
 
                     LogicState.SEARCH_IN_PROGRESS -> {
                         if (payload == null) {
-                            VkApi.wrongCommandMsg(msg.fromId)
+                            VkMsgApi.wrongCommandMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     stopSearch(user)
                                     user.state = LogicState.DISTRICTS
-                                    VkApi.districtsMsg(msg.fromId)
+                                    VkMsgApi.districtsMsg(msg.fromId)
                                 }
 
                                 Command.STOP -> {
                                     stopSearch(user)
                                     user.state = LogicState.WAIT
-                                    VkApi.waitMsg(msg.fromId)
+                                    VkMsgApi.waitMsg(msg.fromId)
                                 }
 
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
 
                     LogicState.WAIT -> {
                         if (payload == null) {
-                            VkApi.wrongCommandMsg(msg.fromId)
+                            VkMsgApi.wrongCommandMsg(msg.fromId)
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
                                     // TODO: reset parameters or ask about every parameter
                                     stopSearch(user)
                                     user.state = LogicState.DISTRICTS
-                                    VkApi.districtsMsg(msg.fromId)
+                                    VkMsgApi.districtsMsg(msg.fromId)
                                 }
 
                                 Command.CONTINUE -> {
                                     user.state = LogicState.SEARCH_IN_PROGRESS
-                                    VkApi.searchMsg(msg.fromId)
+                                    VkMsgApi.searchMsg(msg.fromId)
 
                                     runSearch(user)
                                 }
 
-                                else -> VkApi.wrongCommandMsg(msg.fromId)
+                                else -> VkMsgApi.wrongCommandMsg(msg.fromId)
                             }
                         }
                     }
@@ -270,13 +266,13 @@ object VkClient : CallbackApi() {
                     user.state = LogicState.WAIT
                 }
 
-                VkApi.continueMsg(it.userId)
+                VkMsgApi.continueMsg(it.userId)
             } else {
                 logger.info("Group Join User=${it.userId}. New user")
 
                 User.newVkUser(it.userId)
 
-                VkApi.startMsg(it.userId)
+                VkMsgApi.startMsg(it.userId)
             }
         }
     }
@@ -284,7 +280,7 @@ object VkClient : CallbackApi() {
     override fun groupLeave(groupId: Int?, message: GroupLeave?) {
         message?.let {
             logger.info("Group Leave User='${it.userId}'")
-            VkApi.groupLeaveMsg(it.userId)
+            VkMsgApi.groupLeaveMsg(it.userId)
 
             transaction {
                 val user = User.get(message.userId)
