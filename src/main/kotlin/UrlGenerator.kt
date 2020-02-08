@@ -103,6 +103,7 @@ object UrlGenerator {
         val threeRoom = rooms.contains("3,")
         val moreThreeRoom = rooms.contains("3+")
 
+        // TODO: can to improve
         return when {
             oneRoom && !twoRoom && !threeRoom && !moreThreeRoom -> "f=550_5702-5703"
             !oneRoom && twoRoom && !threeRoom && !moreThreeRoom -> "f=550_5704"

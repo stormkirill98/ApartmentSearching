@@ -2,6 +2,10 @@ package com.group.parsing.flat
 
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -12,7 +16,7 @@ import java.util.*
 object CianParser {
     private val logger = LoggerFactory.getLogger(CianParser::class.java.name)
 
-    fun parse(
+    suspend fun parseAsync(
         url: String,
         send: (flat: Flat) -> Unit
     ) {
@@ -30,22 +34,28 @@ object CianParser {
                     break
                 }
 
-                val flatUrlThread = getUrl(infoDiv)
-                val nameThread = getName(infoDiv)
-                val priceThread = getPrice(infoDiv)
-                val addressThread = getAddress(infoDiv)
-                val imageUrlsThread = getImageUrls(imagesDiv)
+                coroutineScope {
+                    val flatUrlThread = async { getUrl(infoDiv) }
+                    val nameThread = async { getName(infoDiv) }
+                    val priceThread = async { getPrice(infoDiv) }
+                    val addressThread = async { getAddress(infoDiv) }
+                    val imageUrlsThread = async { getImageUrls(imagesDiv) }
 
-                send(
-                    Flat(
-                        nameThread,
-                        date,
-                        flatUrlThread,
-                        priceThread,
-                        addressThread,
-                        imageUrlsThread
-                    )
-                )
+                    launch {
+                        logger.info("[${Thread.currentThread().name}] launch send flat from cian")
+
+                        send(
+                            Flat(
+                                nameThread.await(),
+                                date,
+                                flatUrlThread.await(),
+                                priceThread.await(),
+                                addressThread.await(),
+                                imageUrlsThread.await()
+                            )
+                        )
+                    }
+                }
             }
         }
 

@@ -8,6 +8,8 @@ import com.group.database.User
 import com.group.parsing.flat.AvitoParser
 import com.group.parsing.flat.CianParser
 import com.group.services.vk.VkApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import parsing.flat.Flat
@@ -51,11 +53,20 @@ class SearchFlatServlet : HttpServlet() {
 
             val startTime = Date().time
 
-            val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
-            val cianUrl = UrlGenerator.getCianUrl(flatParameters)
+            runBlocking {
+                logger.info("[${Thread.currentThread().name}] runBlocking")
+                val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+                val cianUrl = UrlGenerator.getCianUrl(flatParameters)
 
-            AvitoParser.parse(avitoUrl, ::sendFlat)
-            CianParser.parse(cianUrl, ::sendFlat)
+                launch {
+                    logger.info("[${Thread.currentThread().name}] launch parse avito")
+                    AvitoParser.parseAsync(avitoUrl, ::sendFlat)
+                }
+                launch {
+                    logger.info("[${Thread.currentThread().name}] launch parse cian")
+                    CianParser.parseAsync(cianUrl, ::sendFlat)
+                }
+            }
 
             logger.info("Complete by ${Date().time - startTime} ms")
         }

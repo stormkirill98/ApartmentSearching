@@ -2,6 +2,9 @@ package com.group.parsing.flat
 
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
@@ -12,7 +15,7 @@ import java.util.*
 object AvitoParser {
     private val logger = LoggerFactory.getLogger(AvitoParser::class.java)
 
-    fun parse(
+    suspend fun parseAsync(
         url: String,
         send: (flat: Flat) -> Unit
     ) {
@@ -39,22 +42,28 @@ object AvitoParser {
 
                 val header = el.select("div.item_table-header")[0]
 
-                val nameThread = getName(header)
-                val flatUrlThread = getUrl(header)
-                val priceThread = getPrice(header)
-                val addressThread = getAddress(el)
-                val imagesThread = getImages(el)
+                coroutineScope {
+                    val nameThread = async { getName(header) }
+                    val flatUrlThread = async { getUrl(header) }
+                    val priceThread = async { getPrice(header) }
+                    val addressThread = async { getAddress(el) }
+                    val imagesThread = async { getImages(el) }
 
-                send(
-                    Flat(
-                        nameThread,
-                        date,
-                        flatUrlThread,
-                        priceThread,
-                        addressThread,
-                        imagesThread
-                    )
-                )
+                    launch {
+                        logger.info("[${Thread.currentThread().name}] launch send flat from avito")
+
+                        send(
+                            Flat(
+                                nameThread.await(),
+                                date,
+                                flatUrlThread.await(),
+                                priceThread.await(),
+                                addressThread.await(),
+                                imagesThread.await()
+                            )
+                        )
+                    }
+                }
             }
         }
 
