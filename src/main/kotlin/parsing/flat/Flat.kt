@@ -8,5 +8,6 @@ data class Flat(
     val url: String,
     val price: String,
     val address: String,
+    val description: String,
     val images: List<String>
 )

@@ -42,6 +42,7 @@ class SearchFlatServlet : HttpServlet() {
         val prevCode = req.getHeader("X-AppEngine-TaskPreviousResponse")
         prevCode?.let {
             if (prevCode.toInt() != HttpServletResponse.SC_CONTINUE) {
+                // TODO send msg to user
                 removeTask(req)
                 emptyTaskId(userId)
                 return

@@ -59,6 +59,7 @@ object AvitoParser {
                                 flatUrlThread.await(),
                                 priceThread.await(),
                                 addressThread.await(),
+                                "",
                                 imagesThread.await()
                             )
                         )
