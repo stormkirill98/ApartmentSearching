@@ -79,6 +79,14 @@ class FlatSearchParameters(id: EntityID<Int>) : IntEntity(id) {
 
     fun setAnyPrice() = setPriceInterval(0 to 0)
 
+    fun reset() {
+        city = ""
+        clearDistricts()
+        clearRooms()
+        setAnyPrice()
+        onlyOwner = false
+    }
+
     fun getMsg(): String {
         val priceInterval = when {
             startPrice == 0 && endPrice == 0 -> "любая"

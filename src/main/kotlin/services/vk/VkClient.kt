@@ -189,7 +189,7 @@ object VkClient : CallbackApi() {
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
-                                    // TODO: reset parameters or ask about every parameter
+                                    flatParameters.reset()
                                     user.state = LogicState.DISTRICTS
                                     VkMsgApi.districtsMsg(msg.fromId)
                                 }
@@ -211,7 +211,7 @@ object VkClient : CallbackApi() {
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
-                                    // TODO: reset parameters or ask about every parameter
+                                    flatParameters.reset()
                                     stopSearch(user)
                                     user.state = LogicState.DISTRICTS
                                     VkMsgApi.districtsMsg(msg.fromId)
@@ -234,7 +234,7 @@ object VkClient : CallbackApi() {
                         } else {
                             when (parseCommand(payload)) {
                                 Command.CHANGE -> {
-                                    // TODO: reset parameters or ask about every parameter
+                                    flatParameters.reset()
                                     stopSearch(user)
                                     user.state = LogicState.DISTRICTS
                                     VkMsgApi.districtsMsg(msg.fromId)
