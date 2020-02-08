@@ -7,8 +7,7 @@ object UrlGenerator {
     fun getAvitoUrl(flatParameters: FlatSearchParameters): String {
         val url = StringBuilder("https://www.avito.ru/")
 
-        val city = transliterateCyrillicToLatin(flatParameters.city.trim())
-        url.append("$city/kvartiry/sdam/na_dlitelnyy_srok?s=104") // s = 104 - порядок по дате
+        url.append("yaroslavl/kvartiry/sdam/na_dlitelnyy_srok?s=104") // s = 104 - порядок по дате
 
         val district = flatParameters.districts.dropLast(1)
         if (district.isNotEmpty())
@@ -104,25 +103,16 @@ object UrlGenerator {
 
     private fun getRoomAvitoUrlPart(rooms: String): String {
         if (rooms.isEmpty()) return ""
+        val roomsPartUrl = StringBuilder("f=550_")
 
-        val oneRoom = rooms.contains("1,")
-        val twoRoom = rooms.contains("2,")
-        val threeRoom = rooms.contains("3,")
-        val moreThreeRoom = rooms.contains("3+")
-
-        // TODO: can to improve
-        return when {
-            oneRoom && !twoRoom && !threeRoom && !moreThreeRoom -> "f=550_5702-5703"
-            !oneRoom && twoRoom && !threeRoom && !moreThreeRoom -> "f=550_5704"
-            !oneRoom && !twoRoom && threeRoom && !moreThreeRoom -> "f=550_5705"
-            !oneRoom && !twoRoom && !threeRoom && moreThreeRoom -> "f=550_5706-5707-5708-11022-11023-11024-11025"
-            oneRoom && twoRoom && !threeRoom && !moreThreeRoom -> "f=550_5702-5703-5704"
-            oneRoom && !twoRoom && threeRoom && !moreThreeRoom -> "f=550_5702-5703-5705"
-            !oneRoom && twoRoom && threeRoom && !moreThreeRoom -> "f=550_5704-5705"
-            oneRoom && twoRoom && threeRoom && !moreThreeRoom -> "f=550_5702-5703-5704-5705"
-            oneRoom && twoRoom && threeRoom && moreThreeRoom -> "f=550_5702-5703-5704-5705-5706-5707-5708-11022-11023-11024-11025"
-            else -> ""
+        when {
+            rooms.contains("1,") -> roomsPartUrl.append("5702-5703-")
+            rooms.contains("2,") -> roomsPartUrl.append("5704-")
+            rooms.contains("3,") -> roomsPartUrl.append("5705-")
+            rooms.contains("3+") -> roomsPartUrl.append("5706-5707-5708-11022-11023-11024-11025-")
         }
+
+        return roomsPartUrl.toString().dropLast(1)
     }
 }
 

@@ -74,6 +74,7 @@ fun Application.module() {
                 runBlocking {
                     logger.info("[${Thread.currentThread().name}] runBlocking")
                     val avitoUrl = UrlGenerator.getAvitoUrl(flatParameters)
+                    println(avitoUrl)
                     val cianUrl = UrlGenerator.getCianUrl(flatParameters)
 
                     launch {
