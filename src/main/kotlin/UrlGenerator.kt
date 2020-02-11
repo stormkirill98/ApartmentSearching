@@ -33,7 +33,7 @@ object UrlGenerator {
 
     fun getCianUrl(flatParameters: FlatSearchParameters): String {
         val url =
-            StringBuilder("https://yaroslavl.cian.ru/cat.php?deal_type=rent&engine_version=2&region=5075&offer_type=flat&totime=3600")
+            StringBuilder("https://yaroslavl.cian.ru/cat.php?deal_type=rent&engine_version=2&region=5075&offer_type=flat&totime=3600&type=4")
 
         if (flatParameters.onlyOwner)
             url.append("&is_by_homeowner=1")
