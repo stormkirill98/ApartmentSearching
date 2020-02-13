@@ -19,102 +19,117 @@ import kotlin.random.Random
 object VkMsgApi {
     private val logger = LoggerFactory.getLogger(VkApi::class.java)
 
-    fun startMsg(peerId: Int) {
+    fun startMsg(id: Int) {
         VkApi.sendMsg(
-            peerId,
+            id,
             "Привет! " +
                     "Я помогу тебе снять квартиру. " +
                     "Для этого я буду присылать тебе новые объявления каждый час. " +
-                    "Начнем-с?",
+                    "Начнем?",
             Keyboards.START
         )
     }
 
-    fun continueMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
+    fun startKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.START)
+
+    fun continueMsg(id: Int) {
+        VkApi.sendMsg(id, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
     }
 
-    fun districtsMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
+    fun continueKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.WAIT)
+
+    fun districtsMsg(id: Int) {
+        VkApi.sendMsg(id, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
     }
 
-    fun roomsMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
+    fun districtsKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.YAROSLAVL_DISTRICTS)
+
+    fun notSelectDistrictsMsg(id: Int) {
+        VkApi.sendMsg(id, "Нет выбранных районов. Квартиры будут искаться по всему городу")
     }
 
-    fun notSelectDistrictsMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Нет выбранных районов. Квартиры будут искаться по всему городу")
+    fun roomsMsg(id: Int) {
+        VkApi.sendMsg(id, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
     }
 
-    fun notSelectRoomsMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат")
+    fun roomsKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.COUNT_ROOMS)
+
+    fun notSelectRoomsMsg(id: Int) {
+        VkApi.sendMsg(id, "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат")
     }
 
-    fun priceMsg(peerId: Int) {
+    fun priceMsg(id: Int) {
         VkApi.sendMsg(
-            peerId,
+            id,
             "Введите диапазон цен в формате: от XXX до XXX(также возможны варианты: от XXX, до XXX)",
             Keyboards.PRICE
         )
     }
 
-    fun landlordMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
+    fun priceKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.PRICE)
+
+    fun landlordMsg(id: Int) {
+        VkApi.sendMsg(id, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
     }
 
-    fun confirmMsg(peerId: Int, text: String) {
-        VkApi.sendMsg(peerId, text, Keyboards.CONFIRM)
+    fun landlordKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.LANDLORDS)
+
+    fun confirmMsg(id: Int, text: String) {
+        VkApi.sendMsg(id, text, Keyboards.CONFIRM)
     }
 
-    fun searchMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
+    fun confirmKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.CONFIRM)
+
+    fun searchMsg(id: Int) {
+        VkApi.sendMsg(id, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
     }
 
-    fun waitMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
+    fun searchKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.MAIN)
+
+    fun waitMsg(id: Int) {
+        VkApi.sendMsg(id, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
     }
 
-    fun groupLeaveMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
+    fun waitKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.WAIT)
+
+    fun groupLeaveMsg(id: Int) {
+        VkApi.sendMsg(id, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
     }
 
-    fun wrongPriceMsg(peerId: Int) {
+    fun wrongPriceMsg(id: Int) {
         VkApi.sendMsg(
-            peerId,
+            id,
             "Введенный диапазон цен не соответствует формату.\nПример: от 5000 до 10000"
         )
     }
 
-    fun wrongCommandMsg(peerId: Int) {
-        VkApi.sendMsg(peerId, "Неверная команда")
+    fun wrongCommandMsg(id: Int) {
+        VkApi.sendMsg(id, "Неверная команда\n\\keyboard - получить текущую клавиатуру")
     }
 
-    fun sendFlat(peerId: Int, flat: Flat) {
+    fun sendFlat(id: Int, flat: Flat) {
         val dateFormat = SimpleDateFormat("MM-dd HH:mm")
 
-        logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $peerId")
+        logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $id")
 
-        VkApi.createSender()
-            .peerId(peerId)
-            .message(
-                """ 
+        VkApi.createSender(id,
+            """ 
                 ${flat.name}
                 Выложено ${dateFormat.format(flat.date.time)}
                 Цена: ${flat.price}
                 Адрес: ${flat.address}
                 ${flat.url}
-            """.trimIndent()
-            )
+            """.trimIndent())
             .attachment(VkApi.getPhotoAttachments(flat.images))
             .execute()
     }
 
-    fun notFoundFlats(peerId: Int) {
-        VkApi.sendMsg(peerId, "За последний час не было выложено новых квартир")
+    fun notFoundFlats(id: Int) {
+        VkApi.sendMsg(id, "За последний час не было выложено новых квартир")
     }
 
-    fun groupJoinMsg(peerId: Int) {
-        VkApi.sendMsg(peerId,"Подпишитесь на группу, чтобы бот смог вам помочь")
+    fun groupJoinMsg(id: Int) {
+        VkApi.sendMsg(id,"Подпишитесь на группу, чтобы бот смог вам помочь")
     }
 }
 
@@ -127,19 +142,17 @@ object VkApi {
     private val vkApi = VkApiClient(HttpTransportClient.getInstance())
     private val actor = GroupActor(groupId, accessKey)
 
-    fun sendMsg(peerId: Int, msg: String, keyboard: Keyboards? = null) {
-        logger.info("Send msg to $peerId with text='$msg'")
+    fun sendMsg(id: Int, msg: String, keyboard: Keyboards? = null) {
+        logger.info("Send msg to $id with text='$msg'")
 
-        val sender = createSender()
-            .peerId(peerId)
-            .message(msg)
+        val sender = createSender(id, msg)
 
         keyboard?.let { sender.keyboard(keyboard.keyboard) }
 
         sender.execute()
     }
 
-    fun createSender(): MessagesSendQuery = vkApi.messages().send(actor).randomId(Random.nextInt())
+    fun createSender(id: Int, msg: String): MessagesSendQuery = vkApi.messages().send(actor).randomId(Random.nextInt()).peerId(id).message(msg)
 
     fun getPhotoAttachments(imageUrls: List<String>): String {
         val imageThreads = arrayListOf<Deferred<Photo>>()

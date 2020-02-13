@@ -46,6 +46,11 @@ object VkClient : CallbackApi() {
                 val user = User.get(msg.fromId)
                 val flatParameters = user.searchParameters.flatParameters
 
+                if (msg.text != null && msg.text == "\\keyboard") {
+                    resendCurrentKeyboard(user)
+                    return@transaction
+                }
+
                 when (user.state) {
                     LogicState.NOT_START -> handleNotStart(user, msg)
                     LogicState.CITY -> TODO()
@@ -58,6 +63,20 @@ object VkClient : CallbackApi() {
                     LogicState.WAIT -> handleWait(user, flatParameters, msg)
                 }
             }
+        }
+    }
+
+    private fun resendCurrentKeyboard(user: User) {
+        when(user.state) {
+            LogicState.NOT_START -> VkMsgApi.startKeyboard(user.id.value)
+            LogicState.CITY -> TODO()
+            LogicState.DISTRICTS -> VkMsgApi.districtsKeyboard(user.id.value)
+            LogicState.COUNT_ROOM -> VkMsgApi.roomsKeyboard(user.id.value)
+            LogicState.PRICE -> VkMsgApi.priceKeyboard(user.id.value)
+            LogicState.LANDLORD -> VkMsgApi.landlordKeyboard(user.id.value)
+            LogicState.CONFIRM -> VkMsgApi.confirmKeyboard(user.id.value)
+            LogicState.SEARCH_IN_PROGRESS -> VkMsgApi.searchKeyboard(user.id.value)
+            LogicState.WAIT -> VkMsgApi.waitKeyboard(user.id.value)
         }
     }
 
