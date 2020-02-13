@@ -112,14 +112,16 @@ object VkMsgApi {
 
         logger.info("Send flat: ${flat.name} ${dateFormat.format(flat.date.time)} to $id")
 
-        VkApi.createSender(id,
+        VkApi.createSender(
+            id,
             """ 
                 ${flat.name}
                 Выложено ${dateFormat.format(flat.date.time)}
                 Цена: ${flat.price}
                 Адрес: ${flat.address}
                 ${flat.url}
-            """.trimIndent())
+            """.trimIndent()
+        )
             .attachment(VkApi.getPhotoAttachments(flat.images))
             .execute()
     }
@@ -129,7 +131,7 @@ object VkMsgApi {
     }
 
     fun groupJoinMsg(id: Int) {
-        VkApi.sendMsg(id,"Подпишитесь на группу, чтобы бот смог вам помочь")
+        VkApi.sendMsg(id, "Подпишитесь на группу, чтобы бот смог вам помочь")
     }
 }
 
@@ -152,7 +154,8 @@ object VkApi {
         sender.execute()
     }
 
-    fun createSender(id: Int, msg: String): MessagesSendQuery = vkApi.messages().send(actor).randomId(Random.nextInt()).peerId(id).message(msg)
+    fun createSender(id: Int, msg: String): MessagesSendQuery =
+        vkApi.messages().send(actor).randomId(Random.nextInt()).peerId(id).message(msg)
 
     fun getPhotoAttachments(imageUrls: List<String>): String {
         val imageThreads = arrayListOf<Deferred<Photo>>()
