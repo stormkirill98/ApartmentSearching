@@ -4,43 +4,37 @@ import com.group.services.vk.enums.Command
 import com.group.services.vk.enums.CountRoomCommand
 import com.group.services.vk.enums.LandlordCommand
 
-fun parseCommand(payload: String): Command {
-    val action = payload
-        .substringAfter(":")
-        .substringAfter("\"")
-        .substringBefore("\"")
+fun parseCommand(payload: String?): Command {
+    if (payload == null) return Command.NONE
+
+    val action = parsePayload(payload)
 
     return try {
-        // TODO: enhancement: remove toUpperCase(),
-        //  all command in payload already in uppercase,
-        //  not forget to change commands in Postman on uppercase
-        Command.valueOf(action.toUpperCase())
+        Command.valueOf(action)
     } catch (e: IllegalArgumentException) {
         Command.NONE
     }
 }
 
-fun parseLandlordCommand(payload: String): LandlordCommand {
-    val action = payload
-        .substringAfter(":")
-        .substringAfter("\"")
-        .substringBefore("\"")
+fun parseLandlordCommand(payload: String?): LandlordCommand {
+    if (payload == null) return LandlordCommand.NONE
+
+    val action = parsePayload(payload)
 
     return try {
-        LandlordCommand.valueOf(action.toUpperCase())
+        LandlordCommand.valueOf(action)
     } catch (e: IllegalArgumentException) {
         LandlordCommand.NONE
     }
 }
 
-fun parseCountRoomCommand(payload: String): CountRoomCommand {
-    val action = payload
-        .substringAfter(":")
-        .substringAfter("\"")
-        .substringBefore("\"")
+fun parseCountRoomCommand(payload: String?): CountRoomCommand {
+    if (payload == null) return CountRoomCommand.NONE
+
+    val action = parsePayload(payload)
 
     return try {
-        CountRoomCommand.valueOf(action.toUpperCase())
+        CountRoomCommand.valueOf(action)
     } catch (e: IllegalArgumentException) {
         CountRoomCommand.NONE
     }
@@ -61,3 +55,8 @@ fun parsePrice(s: String): Pair<Int, Int> {
 
     return startPrice to endPrice
 }
+
+private fun parsePayload(payload: String) = payload
+    .substringAfter(":")
+    .substringAfter("\"")
+    .substringBefore("\"")
