@@ -25,6 +25,8 @@ fun nowCalendar(): Calendar {
     return date
 }
 
+fun emptyCalendar() = Calendar.getInstance().apply { clear() }
+
 fun isProduction() = SystemProperty.environment.value() == SystemProperty.Environment.Value.Production
 
 fun getPhoto(url: String): File {

@@ -1,5 +1,7 @@
 package com.group.parsing.flat
 
+import com.group.emptyCalendar
+import com.group.nowCalendar
 import com.group.parsing.HOUR
 import com.group.parsing.getDifferenceFromNow
 import kotlinx.coroutines.async
@@ -74,7 +76,10 @@ object AvitoParser {
 
     private fun getDate(div: Element): Calendar {
         val dateDiv = div.select("div.js-item-date")
+        if (dateDiv.isNullOrEmpty()) return emptyCalendar()
+
         val dateStr = dateDiv.get(0).attr("data-absolute-date")
+        if (dateStr.isNullOrBlank()) return emptyCalendar()
 
         return com.group.parsing.getDate(dateStr)
     }
