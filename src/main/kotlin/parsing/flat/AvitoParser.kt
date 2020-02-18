@@ -75,12 +75,8 @@ object AvitoParser {
     private fun getName(div: Element) = div.select("h3.snippet-title")[0].text()
 
     private fun getDate(div: Element): Calendar {
-        val dateDiv = div.select("div.js-item-date")
-        if (dateDiv.isNullOrEmpty()) return emptyCalendar()
-
-        val dateStr = dateDiv.get(0).attr("data-absolute-date")
-        if (dateStr.isNullOrBlank()) return emptyCalendar()
-
+        val dateDiv = div.select("div.snippet-date-info")
+        val dateStr = dateDiv.first().text()
         return com.group.parsing.getDate(dateStr)
     }
 
