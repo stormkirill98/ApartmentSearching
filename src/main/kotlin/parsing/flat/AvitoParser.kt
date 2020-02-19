@@ -94,7 +94,7 @@ object AvitoParser {
         return "https://www.avito.ru" + div.select("a.snippet-link")[0].attr("href")
     }
 
-    private fun getPrice(div: Element) = div.select("span.price").text().trim().substringBefore("₽")
+    private fun getPrice(div: Element) = div.select("span.snippet-price").text().trim().substringBefore("₽")
 
     private fun getAddress(div: Element) = div.select("div.address")[0].text()
 
