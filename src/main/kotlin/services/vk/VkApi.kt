@@ -104,7 +104,7 @@ object VkMsgApi {
     }
 
     fun wrongCommandMsg(id: Int) {
-        VkApi.sendMsg(id, "Неверная команда\n\\keyboard - получить текущую клавиатуру")
+        VkApi.sendMsg(id, "Неверная команда\n")
     }
 
     fun sendFlat(id: Int, flat: Flat) {
