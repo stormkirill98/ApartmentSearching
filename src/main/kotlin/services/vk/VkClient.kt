@@ -81,6 +81,8 @@ object VkClient : CallbackApi() {
     }
 
     override fun groupJoin(groupId: Int?, message: GroupJoin?) {
+        // TODO: wait /start msg for start dialog
+        // TODO: check that user can use keyboards
         message?.let {
             if (User.exists(it.userId)) {
                 logger.info("Group Join User=${it.userId}. User is back")

@@ -31,13 +31,13 @@ object AvitoParser {
 
                 val formatter = SimpleDateFormat("dd-MM HH:mm")
                 // пропускаем квартиры расположенные вверху списка, из-за того что их подняли
-                if (dateDifference > HOUR && isRaised) {
+                if (dateDifference < 0 || dateDifference > HOUR && isRaised) {
                     logger.info("Skip flat: ${formatter.format(date.time)}")
                     continue
                 }
 
                 // прекращаем смотреть квартиры, как встречаем квартиру с давним временем и не поднятую
-                if (dateDifference > HOUR && !isRaised) {
+                if (dateDifference < 0 || dateDifference > HOUR && !isRaised) {
                     logger.info("Break search on flat: ${formatter.format(date.time)}")
                     break
                 }

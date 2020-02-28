@@ -30,19 +30,19 @@ object VkMsgApi {
         )
     }
 
-    fun startKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.START)
+    fun startKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.START)
 
     fun continueMsg(id: Int) {
         VkApi.sendMsg(id, "Спасибо что вернулись. Давайте продолжим)", Keyboards.WAIT)
     }
 
-    fun continueKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.WAIT)
+    fun continueKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.WAIT)
 
     fun districtsMsg(id: Int) {
         VkApi.sendMsg(id, "Выберите нужные районы", Keyboards.YAROSLAVL_DISTRICTS)
     }
 
-    fun districtsKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.YAROSLAVL_DISTRICTS)
+    fun districtsKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.YAROSLAVL_DISTRICTS)
 
     fun notSelectDistrictsMsg(id: Int) {
         VkApi.sendMsg(id, "Нет выбранных районов. Квартиры будут искаться по всему городу")
@@ -52,7 +52,7 @@ object VkMsgApi {
         VkApi.sendMsg(id, "Выберите кол-во комнат, которое вам подходит", Keyboards.COUNT_ROOMS)
     }
 
-    fun roomsKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.COUNT_ROOMS)
+    fun roomsKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.COUNT_ROOMS)
 
     fun notSelectRoomsMsg(id: Int) {
         VkApi.sendMsg(id, "Кол-во комнат не задано. Квартиры будут искаться с любым кол-вом комнат")
@@ -66,31 +66,31 @@ object VkMsgApi {
         )
     }
 
-    fun priceKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.PRICE)
+    fun priceKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.PRICE)
 
     fun landlordMsg(id: Int) {
         VkApi.sendMsg(id, "Показывать квартиры только от собственника или от агенств тоже?", Keyboards.LANDLORDS)
     }
 
-    fun landlordKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.LANDLORDS)
+    fun landlordKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.LANDLORDS)
 
     fun confirmMsg(id: Int, text: String) {
         VkApi.sendMsg(id, text, Keyboards.CONFIRM)
     }
 
-    fun confirmKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.CONFIRM)
+    fun confirmKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.CONFIRM)
 
     fun searchMsg(id: Int) {
         VkApi.sendMsg(id, "Поиск начался, ожидайте подходящие для вас квартиры", Keyboards.MAIN)
     }
 
-    fun searchKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.MAIN)
+    fun searchKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.MAIN)
 
     fun waitMsg(id: Int) {
         VkApi.sendMsg(id, "Поиск приостановлен. Если хотите продолжить выберите действие", Keyboards.WAIT)
     }
 
-    fun waitKeyboard(id: Int) = VkApi.sendMsg(id, "", Keyboards.WAIT)
+    fun waitKeyboard(id: Int) = VkApi.sendMsg(id, " ", Keyboards.WAIT)
 
     fun groupLeaveMsg(id: Int) {
         VkApi.sendMsg(id, "Вы уходите? Надемся вы нашли, что искали)", Keyboards.EMPTY)
@@ -114,7 +114,7 @@ object VkMsgApi {
 
         VkApi.createSender(
             id,
-            """ 
+            """
                 ${flat.name}
                 Выложено ${dateFormat.format(flat.date.time)}
                 Цена: ${flat.price}

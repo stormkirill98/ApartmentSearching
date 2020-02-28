@@ -27,8 +27,8 @@ object CianParser {
                 val infoDiv = el.select("div.c6e8ba5398--main--1NDwp").last() ?: continue
 
                 val date = getDate(el)
-
-                if (getDifferenceFromNow(date) > HOUR) {
+                val difference = getDifferenceFromNow(date)
+                if (difference < 0 || difference > HOUR) {
                     logger.info("Break on flat: ${SimpleDateFormat("dd-MM HH:mm").format(date.time)}")
                     break
                 }
